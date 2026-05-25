@@ -57,7 +57,7 @@ const timeFieldClass =
   'h-11 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-colors focus:border-red-500 focus:ring-2 focus:ring-red-500/20';
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
