@@ -33,8 +33,14 @@ const emptyTask: CreateTaskInput & { startTime?: string; endTime?: string } = {
 const statusLabels: Record<TaskStatus, string> = {
   pending: 'Pa filluar',
   in_progress: 'Duke u punuar',
-  completed: 'Perfunduar',
-  cancelled: 'Te anuluar',
+  completed: 'E përfunduar',
+  cancelled: 'E anuluar',
+};
+
+const priorityLabels: Record<TaskPriority, string> = {
+  low: 'I Ulët',
+  medium: 'I Mesëm',
+  high: 'I Lartë',
 };
 
 const priorityClasses: Record<TaskPriority, string> = {
@@ -353,20 +359,20 @@ const Dashboard: React.FC = () => {
               {/* Title & Description Row */}
               <div className="grid gap-4 lg:grid-cols-2">
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-white">Task Title *</span>
+                  <span className="mb-2 block text-sm font-semibold text-white">Emri i detyrës *</span>
                   <input
                     type="text"
                     name="title"
                     value={draftTask.title}
                     onChange={handleDraftChange}
                     className={textFieldClass}
-                    placeholder="Enter task title..."
+                    placeholder="Emri i detyrës..."
                     required
                   />
                 </label>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-white">Due Date</span>
+                  <span className="mb-2 block text-sm font-semibold text-white">Data</span>
                   <input
                     type="date"
                     name="dueDate"
@@ -380,20 +386,20 @@ const Dashboard: React.FC = () => {
 
               {/* Description */}
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-white">Description</span>
+                <span className="mb-2 block text-sm font-semibold text-white">Përshkrimi</span>
                 <textarea
                   name="description"
                   value={draftTask.description}
                   onChange={handleDraftChange}
                   className={textareaClass}
-                  placeholder="Enter task description..."
+                  placeholder="Përshkrimi i detyrës suaj"
                 />
               </label>
 
               {/* Time Range */}
               <div className="grid gap-4 lg:grid-cols-2">
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-white">Start Time</span>
+                  <span className="mb-2 block text-sm font-semibold text-white">Koha e fillimit</span>
                   <input
                     type="time"
                     name="startTime"
@@ -404,7 +410,7 @@ const Dashboard: React.FC = () => {
                 </label>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-white">End Time</span>
+                  <span className="mb-2 block text-sm font-semibold text-white">Koha e mbarimit</span>
                   <input
                     type="time"
                     name="endTime"
@@ -418,21 +424,21 @@ const Dashboard: React.FC = () => {
               {/* Priority, Category, Color */}
               <div className="grid gap-4 lg:grid-cols-3">
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-white">Priority</span>
+                  <span className="mb-2 block text-sm font-semibold text-white">Prioriteti</span>
                   <select
                     name="priority"
                     value={draftTask.priority}
                     onChange={handleDraftChange}
                     className={selectFieldClass}
                   >
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
+                    <option value="low">I Ulët</option>
+                    <option value="medium">I Mesëm</option>
+                    <option value="high">I Lartë</option>
                   </select>
                 </label>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-white">Category</span>
+                  <span className="mb-2 block text-sm font-semibold text-white">Kategoria</span>
                   <select
                     name="category"
                     value={draftTask.category}
@@ -448,7 +454,7 @@ const Dashboard: React.FC = () => {
                 </label>
 
                 <label className="block">
-                  <span className="mb-2 block text-sm font-semibold text-white">Color</span>
+                  <span className="mb-2 block text-sm font-semibold text-white">Ngjyra</span>
                   <input
                     type="color"
                     name="colorLabel"
@@ -456,6 +462,7 @@ const Dashboard: React.FC = () => {
                     onChange={handleDraftChange}
                     className="h-11 w-full rounded-lg border border-slate-300 p-1"
                   />
+                  <span className="mt-2 block text-xs text-slate-400">Ngjyra e detyrës (opsionale)</span>
                 </label>
               </div>
 
@@ -470,10 +477,10 @@ const Dashboard: React.FC = () => {
               {/* Submit */}
               <div className="flex justify-end gap-3">
                 <Button type="button" variant="secondary" onClick={() => setShowCreateForm(false)}>
-                  Cancel
+                  Anulo
                 </Button>
                 <Button type="submit" variant="primary" loading={saving}>
-                  Create Task
+                  Krijoni Detyrën
                 </Button>
               </div>
             </form>
@@ -489,7 +496,7 @@ const Dashboard: React.FC = () => {
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 className="h-12 w-full rounded-lg border border-fuchsia-300/20 bg-black/50 pl-11 pr-4 text-white outline-none focus:border-black-500 focus:ring-2 focus:ring-cyan-300/20"
-                placeholder="Search tasks by name, description or category"
+                placeholder="Kërkoni detyrat sipas emrit, përshkrimit ose kategorisë"
               />
             </label>
 
@@ -498,11 +505,11 @@ const Dashboard: React.FC = () => {
               onChange={(event) => setFilterStatus(event.target.value as TaskStatus | 'all')}
               className="h-12 rounded-lg border border-fuchsia-300/20 bg-black/70 px-4 text-white outline-none focus:border-black-500"
             >
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
+              <option value="all">Të gjitha</option>
+              <option value="pending">Në pritje</option>
+              <option value="in_progress">Duke u punuar</option>
+              <option value="completed">E përfunduar</option>
+              <option value="cancelled">E anuluar</option>
             </select>
 
             <select
@@ -510,8 +517,8 @@ const Dashboard: React.FC = () => {
               onChange={(event) => setSortBy(event.target.value as 'dueDate' | 'priority')}
               className="h-12 rounded-lg border border-fuchsia-300/20 bg-black/70 px-4 text-white outline-none focus:border-black-500"
             >
-              <option value="dueDate">By Date</option>
-              <option value="priority">By Priority</option>
+              <option value="dueDate">Kërko sipas datës</option>
+              <option value="priority">Sipas prioritetit</option>
             </select>
           </div>
         </section>
@@ -532,7 +539,7 @@ const Dashboard: React.FC = () => {
           </div>
         ) : filteredTasks.length === 0 ? (
           <div className="panel-glass rounded-lg py-16 text-center">
-            <p className="mt-2 text-sm text-slate-400">No tasks found.</p>
+            <p className="mt-2 text-sm text-slate-400">Ska taska të krijuara për momentin</p>
           </div>
         ) : (
           <section className="grid gap-4 xl:grid-cols-2">
@@ -573,7 +580,7 @@ const Dashboard: React.FC = () => {
                     {/* Tags */}
                     <div className="mt-4 flex flex-wrap items-center gap-2">
                       <span className={`rounded-lg border px-3 py-1 text-xs font-bold uppercase ${priorityClasses[task.priority]}`}>
-                        {task.priority}
+                        {priorityLabels[task.priority]}
                       </span>
                       <span className="rounded-lg border border-fuchsia-300/25 bg-fuchsia-500/15 px-3 py-1 text-xs font-bold uppercase text-fuchsia-100">
                         {statusLabels[task.status]}
@@ -587,17 +594,17 @@ const Dashboard: React.FC = () => {
                     <div className="mt-5 flex flex-wrap gap-2">
                       <Button type="button" variant="secondary" size="sm" onClick={() => startEditingTask(task)}>
                         <FiEdit2 className="h-4 w-4" />
-                        Edit
+                        Ndrysho
                       </Button>
                       {task.status !== 'completed' && (
                         <Button type="button" variant="secondary" size="sm" onClick={() => void handleCompleteTask(task.id)}>
                           <FiCheckCircle className="h-4 w-4" />
-                          Complete
+                          Plotëso
                         </Button>
                       )}
                       <Button type="button" variant="outline" size="sm" onClick={() => void handleDeleteTask(task.id)}>
                         <FiTrash2 className="h-3 w-4" />
-                        Delete
+                        Fshi
                       </Button>
                     </div>
 
@@ -607,26 +614,26 @@ const Dashboard: React.FC = () => {
                         onSubmit={(event) => void handleUpdateTask(event, task)}
                         className="mt-5 rounded-lg border border-cyan-200/20 bg-black/35 p-4"
                       >
-                        <h3 className="mb-4 text-sm font-bold text-white">Edit Task</h3>
+                        <h3 className="mb-4 text-sm font-bold text-white">Ndrysho Detyrën</h3>
 
                         <div className="space-y-4">
                           {/* Title & Date */}
                           <div className="grid gap-4 lg:grid-cols-2">
                             <label className="block">
-                              <span className="mb-2 block text-sm font-semibold text-slate-200">Title *</span>
+                              <span className="mb-2 block text-sm font-semibold text-slate-200">Emri i detyrës *</span>
                               <input
                                 type="text"
                                 name="title"
                                 value={editTask.title || ''}
                                 onChange={handleEditChange}
                                 className={textFieldClass}
-                                placeholder="Task title"
+                                placeholder="Emri i detyrës"
                                 required
                               />
                             </label>
 
                             <label className="block">
-                              <span className="mb-2 block text-sm font-semibold text-slate-200">Due Date</span>
+                              <span className="mb-2 block text-sm font-semibold text-slate-200">Data</span>
                               <input
                                 type="date"
                                 name="dueDate"
@@ -640,20 +647,20 @@ const Dashboard: React.FC = () => {
 
                           {/* Description */}
                           <label className="block">
-                            <span className="mb-2 block text-sm font-semibold text-slate-200">Description</span>
+                            <span className="mb-2 block text-sm font-semibold text-slate-200">Përshkrimi</span>
                             <textarea
                               name="description"
                               value={editTask.description || ''}
                               onChange={handleEditChange}
                               className={textareaClass}
-                              placeholder="Task description"
+                              placeholder="Përshkrimi i detyrës"
                             />
                           </label>
 
                           {/* Time Range */}
                           <div className="grid gap-4 lg:grid-cols-2">
                             <label className="block">
-                              <span className="mb-2 block text-sm font-semibold text-slate-200">Start Time</span>
+                              <span className="mb-2 block text-sm font-semibold text-slate-200">Koha e fillimit</span>
                               <input
                                 type="time"
                                 name="startTime"
@@ -664,7 +671,7 @@ const Dashboard: React.FC = () => {
                             </label>
 
                             <label className="block">
-                              <span className="mb-2 block text-sm font-semibold text-slate-200">End Time</span>
+                              <span className="mb-2 block text-sm font-semibold text-slate-200">Koha e mbarimit</span>
                               <input
                                 type="time"
                                 name="endTime"
@@ -678,36 +685,36 @@ const Dashboard: React.FC = () => {
                           {/* Priority, Status, Category */}
                           <div className="grid gap-4 lg:grid-cols-3">
                             <label className="block">
-                              <span className="mb-2 block text-sm font-semibold text-slate-200">Priority</span>
+                              <span className="mb-2 block text-sm font-semibold text-slate-200">Prioriteti</span>
                               <select
                                 name="priority"
                                 value={editTask.priority || task.priority}
                                 onChange={handleEditChange}
                                 className={selectFieldClass}
                               >
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
+                                <option value="low">I Ulët</option>
+                                <option value="medium">I Mesëm</option>
+                                <option value="high">I Lartë</option>
                               </select>
                             </label>
 
                             <label className="block">
-                              <span className="mb-2 block text-sm font-semibold text-slate-200">Status</span>
+                              <span className="mb-2 block text-sm font-semibold text-slate-200">Statusi</span>
                               <select
                                 name="status"
                                 value={editTask.status || task.status}
                                 onChange={handleEditChange}
                                 className={selectFieldClass}
                               >
-                                <option value="pending">Pending</option>
-                                <option value="in_progress">In Progress</option>
-                                <option value="completed">Completed</option>
-                                <option value="cancelled">Cancelled</option>
+                                <option value="pending">Pa filluar</option>
+                                <option value="in_progress">Duke u punuar</option>
+                                <option value="completed">E përfunduar</option>
+                                <option value="cancelled">E anuluar</option>
                               </select>
                             </label>
 
                             <label className="block">
-                              <span className="mb-2 block text-sm font-semibold text-slate-200">Category</span>
+                              <span className="mb-2 block text-sm font-semibold text-slate-200">Kategoria</span>
                               <select
                                 name="category"
                                 value={editTask.category || 'meeting'}
@@ -725,7 +732,7 @@ const Dashboard: React.FC = () => {
 
                           {/* Color */}
                           <label className="block">
-                            <span className="mb-2 block text-sm font-semibold text-slate-200">Color</span>
+                            <span className="mb-2 block text-sm font-semibold text-slate-200">Ngjyra</span>
                             <input
                               type="color"
                               name="colorLabel"
@@ -733,6 +740,7 @@ const Dashboard: React.FC = () => {
                               onChange={handleEditChange}
                               className="h-11 w-full rounded-lg border border-slate-300 p-1"
                             />
+                            <span className="mt-2 block text-xs text-slate-400">Ngjyra e detyrës (opsionale)</span>
                           </label>
 
                           {/* Time Error */}
@@ -746,10 +754,10 @@ const Dashboard: React.FC = () => {
                           {/* Buttons */}
                           <div className="flex flex-wrap justify-end gap-2">
                             <Button type="button" variant="secondary" onClick={cancelEditingTask}>
-                              Cancel
+                              Anuloni
                             </Button>
                             <Button type="submit" variant="primary" loading={saving}>
-                              Save Changes
+                              Ruaj ndryshimet
                             </Button>
                           </div>
                         </div>

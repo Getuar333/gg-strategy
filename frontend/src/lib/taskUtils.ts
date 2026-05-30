@@ -51,9 +51,10 @@ export const isEndTimeValid = (startTime: string, endTime: string): boolean => {
 // ==================== PREDEFINED CATEGORIES ====================
 export const TASK_CATEGORIES = [
   { value: 'meeting', label: 'Meeting' },
-  { value: 'lesson', label: 'Lesson' },
-  { value: 'lecture', label: 'Lecture' },
-  { value: 'exam', label: 'Exam' },
+  { value: 'lesson', label: 'Mësim' },
+  { value: 'lecture', label: 'Ligjëratë' },
+  { value: 'exam', label: 'Provim' },
+  { value: 'dite_pushimi', label: 'Ditë pushimi' },
 ] as const;
 
 export type TaskCategory = typeof TASK_CATEGORIES[number]['value'];

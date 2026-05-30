@@ -136,7 +136,8 @@ export class TaskController {
         return res.status(404).json({ message: 'Task not found' });
       }
       await ProductivityStats.calculateStats(userId);
-      res.status(200).json({ message: 'Task marked as complete' });
+      const updatedTask = await Task.getById(id, userId);
+      res.status(200).json({ message: 'Task marked as complete', task: updatedTask });
     } catch (error) {
       console.error('Mark complete error:', error);
       res.status(500).json({ message: 'Failed to mark task' });
