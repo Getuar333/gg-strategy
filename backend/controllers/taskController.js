@@ -1,33 +1,80 @@
 import Task from '../models/Task.js';
 import ProductivityStats from '../models/ProductivityStats.js';
+import { normalizeDateOnly, normalizeTimeOnly } from '../utils/dateOnly.js';
+
+const TASK_PRIORITIES = new Set(['low', 'medium', 'high']);
+const TASK_STATUSES = new Set(['pending', 'in_progress', 'completed', 'cancelled']);
+
+const validationError = (message) => {
+  const error = new Error(message);
+  error.statusCode = 400;
+  return error;
+};
+
+const pick = (source, camelCaseKey, snakeCaseKey) => {
+  if (Object.prototype.hasOwnProperty.call(source, camelCaseKey)) {
+    return source[camelCaseKey];
+  }
+
+  if (snakeCaseKey && Object.prototype.hasOwnProperty.call(source, snakeCaseKey)) {
+    return source[snakeCaseKey];
+  }
+
+  return undefined;
+};
+
+const normalizeTaskPayload = (source, includeStatus = false) => {
+  const title = String(pick(source, 'title') || '').trim();
+  const dueDate = normalizeDateOnly(pick(source, 'dueDate', 'due_date'), 'dueDate');
+  const priority = pick(source, 'priority') || 'medium';
+  const status = pick(source, 'status') || 'pending';
+
+  if (!title || !dueDate) {
+    throw validationError('Title and due date are required');
+  }
+
+  if (!TASK_PRIORITIES.has(priority)) {
+    throw validationError('Invalid priority');
+  }
+
+  if (includeStatus && !TASK_STATUSES.has(status)) {
+    throw validationError('Invalid status');
+  }
+
+  return {
+    title,
+    description: String(pick(source, 'description') || '').trim(),
+    priority,
+    category: String(pick(source, 'category') || 'general').trim() || 'general',
+    dueDate,
+    startTime: normalizeTimeOnly(pick(source, 'startTime', 'start_time'), 'startTime'),
+    endTime: normalizeTimeOnly(pick(source, 'endTime', 'end_time'), 'endTime'),
+    status,
+    colorLabel: String(pick(source, 'colorLabel', 'color_label') || '#3b82f6').trim() || '#3b82f6'
+  };
+};
+
+const sendTaskError = (res, error, fallbackMessage) => {
+  if (error.statusCode) {
+    return res.status(error.statusCode).json({ message: error.message });
+  }
+
+  console.error(`${fallbackMessage}:`, error);
+  return res.status(500).json({ message: fallbackMessage });
+};
 
 export class TaskController {
   static async createTask(req, res) {
     try {
       const userId = req.user.userId;
-      const { title, description, priority, category, dueDate, startTime, endTime, colorLabel } = req.body;
-
-      if (!title || !dueDate) {
-        return res.status(400).json({ message: 'Title and due date are required' });
-      }
-      const taskId = await Task.create(userId, {
-        title,
-        description: description || '',
-        priority: priority || 'medium',
-        category: category || 'general',
-        dueDate,
-        startTime: startTime || null,
-        endTime: endTime || null,
-        colorLabel: colorLabel || '#3b82f6'
-      });
+      const taskId = await Task.create(userId, normalizeTaskPayload(req.body));
       const createdTask = await Task.getById(taskId, userId);
       res.status(201).json({
         message: 'Task created successfully',
         task: createdTask
       });
     } catch (error) {
-      console.error('Create task error:', error);
-      res.status(500).json({ message: 'Failed to create task' });
+      return sendTaskError(res, error, 'Failed to create task');
     }
   }
   static async getTasks(req, res) {
@@ -35,8 +82,6 @@ export class TaskController {
       const userId = req.user.userId;
       const { status } = req.query;
       const tasks = await Task.getUserTasks(userId, status || null);
-      console.log(`GetTasks: userId=${userId}, count=${Array.isArray(tasks)?tasks.length:0}`);
-      if (Array.isArray(tasks) && tasks.length > 0) console.log('First task:', tasks[0]);
       res.status(200).json({ tasks });
     } catch (error) {
       console.error('Get tasks error:', error);
@@ -61,30 +106,21 @@ export class TaskController {
     try {
       const userId = req.user.userId;
       const { id } = req.params;
-      const { title, description, priority, category, dueDate, startTime, endTime, status, colorLabel } = req.body;
-      if (!title || !dueDate) {
-        return res.status(400).json({ message: 'Title and due date are required' });
+      const existingTask = await Task.getById(id, userId);
+
+      if (!existingTask) {
+        return res.status(404).json({ message: 'Task not found' });
       }
-      const updated = await Task.update(id, userId, {
-        title,
-        description: description || '',
-        priority: priority || 'medium',
-        category: category || 'general',
-        dueDate,
-        startTime: startTime || null,
-        endTime: endTime || null,
-        status: status || 'pending',
-        colorLabel: colorLabel || '#3b82f6'
-      });
+
+      const updated = await Task.update(id, userId, normalizeTaskPayload({ ...existingTask, ...req.body }, true));
       if (!updated) {
         return res.status(404).json({ message: 'Task not found' });
       }
-      // Fetch and return the updated task
+
       const updatedTask = await Task.getById(id, userId);
       res.status(200).json({ message: 'Task updated successfully', task: updatedTask });
     } catch (error) {
-      console.error('Update task error:', error);
-      res.status(500).json({ message: 'Failed to update task' });
+      return sendTaskError(res, error, 'Failed to update task');
     }
   }
   static async deleteTask(req, res) {
@@ -105,13 +141,13 @@ export class TaskController {
     try {
       const userId = req.user.userId;
       const { date } = req.params;
+      const normalizedDate = normalizeDateOnly(date, 'date');
 
-      const tasks = await Task.getTasksByDate(userId, date);
+      const tasks = await Task.getTasksByDate(userId, normalizedDate);
 
       res.status(200).json({ tasks });
     } catch (error) {
-      console.error('Get tasks by date error:', error);
-      res.status(500).json({ message: 'Failed to fetch tasks' });
+      return sendTaskError(res, error, 'Failed to fetch tasks');
     }
   }
   static async getUpcomingTasks(req, res) {
@@ -150,11 +186,12 @@ export class TaskController {
       if (!startDate || !endDate) {
         return res.status(400).json({ message: 'Start date and end date are required' });
       }
-      const tasks = await Task.getTasksByDateRange(userId, startDate, endDate);
+      const normalizedStartDate = normalizeDateOnly(startDate, 'startDate');
+      const normalizedEndDate = normalizeDateOnly(endDate, 'endDate');
+      const tasks = await Task.getTasksByDateRange(userId, normalizedStartDate, normalizedEndDate);
       res.status(200).json({ tasks });
     } catch (error) {
-      console.error('Get tasks by date range error:', error);
-      res.status(500).json({ message: 'Failed to fetch tasks' });
+      return sendTaskError(res, error, 'Failed to fetch tasks');
     }
   }
 }

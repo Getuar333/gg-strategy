@@ -1,20 +1,57 @@
 // ==================== DATE FORMATTING ====================
-export const formatDate = (date: string | Date | null | undefined): string => {
-  if (!date) return 'No date';
-  
-  try {
-    const d = typeof date === 'string' ? new Date(date) : date;
-    if (isNaN(d.getTime())) return 'Invalid date';
-    
-    // Format as YYYY-MM-DD
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    
-    return `${year}-${month}-${day}`;
-  } catch {
-    return 'Invalid date';
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const UTC_MIDNIGHT_DATE_PATTERN = /^(\d{4}-\d{2}-\d{2})T00:00:00(?:\.000)?Z$/;
+
+const pad = (value: number): string => String(value).padStart(2, '0');
+
+export const toDateOnly = (date: string | Date | null | undefined): string => {
+  if (!date) return '';
+
+  if (date instanceof Date) {
+    if (Number.isNaN(date.getTime())) return '';
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   }
+
+  const trimmed = date.trim();
+  if (DATE_ONLY_PATTERN.test(trimmed)) {
+    return trimmed;
+  }
+
+  const utcMidnightDate = trimmed.match(UTC_MIDNIGHT_DATE_PATTERN);
+  if (utcMidnightDate) {
+    return utcMidnightDate[1];
+  }
+
+  const parsed = new Date(trimmed);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+
+  return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`;
+};
+
+export const getTodayDateOnly = (): string => toDateOnly(new Date());
+
+export const parseDateOnly = (date: string | null | undefined): Date | null => {
+  const normalized = toDateOnly(date);
+  if (!normalized) {
+    return null;
+  }
+
+  const [year, month, day] = normalized.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+export const formatDate = (date: string | Date | null | undefined): string => {
+  return toDateOnly(date) || 'Invalid date';
+};
+
+export const formatDisplayDate = (date: string | Date | null | undefined): string => {
+  const parsed = date instanceof Date ? date : parseDateOnly(date);
+  if (!parsed || Number.isNaN(parsed.getTime())) return 'No date';
+
+  return new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long', year: 'numeric' }).format(parsed);
 };
 
 // ==================== TIME FORMATTING ====================

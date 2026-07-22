@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="G.G Strategy favicon">
+  <rect width="64" height="64" rx="16" fill="#04060b"/>
+  <path d="M18 18h28v10H30v6h14v10H30v6h16v10H18z" fill="url(#g)"/>
+  <defs>
+    <linearGradient id="g" x1="18" y1="18" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ff5e3a"/>
+      <stop offset="80%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+</svg>

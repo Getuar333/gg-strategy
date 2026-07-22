@@ -1,4 +1,5 @@
 import axiosInstance, { clearAccessToken, setAccessToken } from '../lib/axios';
+import { toDateOnly } from '../lib/taskUtils';
 import {
   AuthResponse,
   CreateNoteInput,
@@ -19,6 +20,7 @@ type ApiUser = {
   fullName?: string;
   full_name?: string;
   avatar?: string;
+  profile_picture_url?: string | null;
   createdAt?: string;
   created_at?: string;
   updatedAt?: string;
@@ -73,7 +75,7 @@ const normalizeUser = (user: ApiUser): User => ({
   id: user.id,
   email: user.email,
   fullName: user.fullName || user.full_name || 'User',
-  avatar: user.avatar,
+  avatar: user.avatar || user.profile_picture_url || undefined,
   createdAt: user.createdAt || user.created_at,
   updatedAt: user.updatedAt || user.updated_at,
 });
@@ -106,13 +108,23 @@ const normalizeTask = (task: ApiTask): Task => ({
   status: normalizeTaskStatus(task.status),
   priority: normalizeTaskPriority(task.priority),
   category: task.category || 'general',
-  dueDate: task.dueDate || task.due_date || '',
+  dueDate: toDateOnly(task.dueDate || task.due_date || ''),
   startTime: task.startTime || task.start_time || null,
   endTime: task.endTime || task.end_time || null,
   colorLabel: task.colorLabel || task.color_label || '#e11d48',
   createdAt: task.createdAt || task.created_at || '',
   updatedAt: task.updatedAt || task.updated_at || '',
 });
+
+const serializeTask = (data: CreateTaskInput | UpdateTaskInput) => {
+  const payload = { ...data };
+
+  if (payload.dueDate !== undefined) {
+    payload.dueDate = toDateOnly(payload.dueDate);
+  }
+
+  return payload;
+};
 
 const normalizeNoteType = (type?: string | null): NoteType => {
   if (type === 'bookmark' || type === 'idea' || type === 'reminder') {
@@ -217,11 +229,29 @@ export const authService = {
 
     return normalizeUser(response.data.user);
   },
+
+  async updateAvatar(file: File): Promise<User> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    const response = await axiosInstance.put<{ user: ApiUser }>('/auth/profile/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return normalizeUser(response.data.user);
+  },
+
+  async removeAvatar(): Promise<User> {
+    const response = await axiosInstance.delete<{ user: ApiUser }>('/auth/profile/avatar');
+    return normalizeUser(response.data.user);
+  },
 };
 
 export const taskService = {
   async createTask(data: CreateTaskInput): Promise<Task> {
-    const response = await axiosInstance.post<{ task: ApiTask }>('/tasks', data);
+    const response = await axiosInstance.post<{ task: ApiTask }>('/tasks', serializeTask(data));
     return normalizeTask(response.data.task);
   },
 
@@ -236,7 +266,7 @@ export const taskService = {
   },
 
   async updateTask(id: number, data: UpdateTaskInput): Promise<Task> {
-    const response = await axiosInstance.put<{ task: ApiTask }>(`/tasks/${id}`, data);
+    const response = await axiosInstance.put<{ task: ApiTask }>(`/tasks/${id}`, serializeTask(data));
     return normalizeTask(response.data.task);
   },
 
@@ -245,7 +275,7 @@ export const taskService = {
   },
 
   async getTasksByDate(date: string): Promise<Task[]> {
-    const response = await axiosInstance.get<{ tasks: ApiTask[] }>(`/tasks/date/${date}`);
+    const response = await axiosInstance.get<{ tasks: ApiTask[] }>(`/tasks/date/${toDateOnly(date)}`);
     return (response.data.tasks || []).map(normalizeTask);
   },
 
@@ -256,7 +286,7 @@ export const taskService = {
 
   async getTasksByDateRange(startDate: string, endDate: string): Promise<Task[]> {
     const response = await axiosInstance.get<{ tasks: ApiTask[] }>('/tasks/range', {
-      params: { startDate, endDate },
+      params: { startDate: toDateOnly(startDate), endDate: toDateOnly(endDate) },
     });
     return (response.data.tasks || []).map(normalizeTask);
   },

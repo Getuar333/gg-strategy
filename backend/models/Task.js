@@ -1,4 +1,28 @@
 import pool from '../config/database.js';
+import { normalizeDateOnly, normalizeTimeOnly } from '../utils/dateOnly.js';
+
+const mapTaskRow = (row) => {
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    userId: row.user_id,
+    title: row.title,
+    description: row.description || '',
+    status: row.status || 'pending',
+    priority: row.priority || 'medium',
+    category: row.category || 'general',
+    dueDate: normalizeDateOnly(row.due_date, 'dueDate') || '',
+    startTime: normalizeTimeOnly(row.start_time, 'startTime'),
+    endTime: normalizeTimeOnly(row.end_time, 'endTime'),
+    colorLabel: row.color_label || '#3b82f6',
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+};
+
 export class Task {
   static async create(userId, taskData) {
     try {
@@ -32,7 +56,7 @@ export class Task {
       }
       query += ' ORDER BY due_date ASC, start_time ASC';
       const [rows] = await pool.query(query, params);
-      return rows;
+      return rows.map(mapTaskRow);
     } catch (error) {
       throw error;
     }
@@ -43,7 +67,7 @@ export class Task {
         'SELECT * FROM tasks WHERE id = ? AND user_id = ?',
         [id, userId]
       );
-      return rows[0] || null;
+      return mapTaskRow(rows[0]);
     } catch (error) {
       throw error;
     }
@@ -80,7 +104,7 @@ export class Task {
         'SELECT * FROM tasks WHERE user_id = ? AND due_date = ? ORDER BY start_time ASC',
         [userId, date]
       );
-      return rows;
+      return rows.map(mapTaskRow);
     } catch (error) {
       throw error;
     }
@@ -93,7 +117,7 @@ export class Task {
         ORDER BY due_date ASC, start_time ASC`,
         [userId, startDate, endDate]
       );
-      return rows;
+      return rows.map(mapTaskRow);
     } catch (error) {
       throw error;
     }
@@ -108,7 +132,7 @@ export class Task {
         LIMIT 10`,
         [userId, days]
       );
-      return rows;
+      return rows.map(mapTaskRow);
     } catch (error) {
       throw error;
     }
