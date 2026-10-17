@@ -1,4 +1,4 @@
-Official : https://gg-strategy.netlify.app/login
+Official : https://gg-strategy.netlify.app
 
 
 # 🎯 G.G Strategy - Premium Productivity & Planning Application
