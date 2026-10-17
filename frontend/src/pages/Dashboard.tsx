@@ -109,11 +109,11 @@ const Dashboard: React.FC = () => {
     const overdue = tasks.filter((task) => task.status !== 'completed' && task.dueDate && task.dueDate < today).length;
 
     return [
-      { label: 'Total tasks', value: tasks.length, detail: 'All tasks', accent: 'from-[#ff5e3a] to-[#ff9a3c]', icon: <FiCheckCircle /> },
-      { label: 'Completed', value: completed, detail: 'Wins', accent: 'from-[#22c55e] to-[#34d399]', icon: <FiCheckCircle /> },
-      { label: 'In Progress', value: inProgress, detail: 'His working', accent: 'from-[#38bdf8] to-[#0ea5e9]', icon: <FiClock /> },
-      { label: 'Pending', value: pending, detail: 'Not ready', accent: 'from-[#f59e0b] to-[#f97316]', icon: <FiCalendar /> },
-      { label: 'Not Started', value: overdue, detail: 'Ripped', accent: 'from-[#fb7185] to-[#ef4444]', icon: <FiClock /> },
+      { label: 'Total tasks', value: tasks.length, detail: 'Across every category', accent: 'from-[#8173c9] to-[#7486d8]', icon: <FiCheckCircle /> },
+      { label: 'Completed', value: completed, detail: 'Goals achieved', accent: 'from-[#4d9d82] to-[#70b39a]', icon: <FiCheckCircle /> },
+      { label: 'In progress', value: inProgress, detail: 'Moving forward', accent: 'from-[#648bc6] to-[#788dc9]', icon: <FiClock /> },
+      { label: 'Pending', value: pending, detail: 'Ready when you are', accent: 'from-[#b99156] to-[#c5a36e]', icon: <FiCalendar /> },
+      { label: 'Overdue', value: overdue, detail: 'Needs attention', accent: 'from-[#b86d80] to-[#c27d8d]', icon: <FiClock /> },
     ];
   }, [tasks]);
 
@@ -248,12 +248,21 @@ const Dashboard: React.FC = () => {
           <div className="dashboard-hero-copy">
             <p className="dashboard-eyebrow text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Your strategy space</p>
             <h1>Dashboard</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-400">Create your task with precision, execute with focus.</p>
+            <p className="mt-2 max-w-2xl text-sm text-slate-400">Plan your priorities, keep your day moving.</p>
           </div>
-          <Button type="button" className="dashboard-button dashboard-button--primary" onClick={() => setShowCreateForm((value) => !value)}>
-            <FiPlus className="h-4 w-4" />
-            {showCreateForm ? 'Close panel' : 'New task'}
-          </Button>
+          <div className="dashboard-hero-actions">
+            <div className="dashboard-date-card">
+              <span className="dashboard-date-icon"><FiCalendar /></span>
+              <span className="dashboard-date-copy">
+                <span>Today</span>
+                <strong>{new Intl.DateTimeFormat('en', { weekday: 'short', month: 'short', day: 'numeric' }).format(new Date())}</strong>
+              </span>
+            </div>
+            <Button type="button" className="dashboard-button dashboard-button--primary" onClick={() => setShowCreateForm((value) => !value)}>
+              <FiPlus className="h-4 w-4" />
+              {showCreateForm ? 'Close panel' : 'New task'}
+            </Button>
+          </div>
         </header>
 
         <section className="dashboard-metrics mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">

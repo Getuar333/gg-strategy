@@ -2155,7 +2155,7 @@ textarea {
 .dashboard-hero {
   position: relative;
   overflow: hidden;
-  min-height: 176px;
+  min-height: 150px;
   align-items: center;
   border-color: rgba(179, 164, 255, 0.17);
   background:
@@ -2166,13 +2166,12 @@ textarea {
 
 .dashboard-hero::after {
   position: absolute;
-  top: -72px;
-  right: 19%;
-  width: 260px;
-  height: 260px;
-  border: 1px solid rgba(183, 171, 255, 0.11);
+  top: -125px;
+  right: 18%;
+  width: 390px;
+  height: 390px;
   border-radius: 50%;
-  box-shadow: 0 0 0 28px rgba(183, 171, 255, 0.025), 0 0 0 58px rgba(183, 171, 255, 0.018);
+  background: radial-gradient(circle, rgba(129, 106, 230, 0.12), rgba(76, 73, 151, 0.045) 42%, transparent 70%);
   content: "";
   pointer-events: none;
 }
@@ -2181,6 +2180,12 @@ textarea {
 .dashboard-eyebrow { margin: 0; color: #b8a6ff !important; letter-spacing: 0.24em !important; }
 .dashboard-hero h1 { margin: 10px 0 0; color: #fbfaff; font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.045em; line-height: 1.06; }
 .dashboard-hero-copy > p:last-child { margin-top: 12px; color: #a6abc0; font-size: 0.96rem; }
+.dashboard-hero-actions { position: relative; z-index: 1; display: flex; align-items: center; gap: 14px; }
+.dashboard-date-card { display: flex; align-items: center; gap: 11px; min-width: 146px; padding: 10px 14px; border: 1px solid rgba(177, 166, 233, 0.13); border-radius: 16px; background: rgba(11, 14, 28, 0.43); }
+.dashboard-date-icon { display: grid; width: 37px; height: 37px; place-items: center; border: 1px solid rgba(180, 164, 255, 0.17); border-radius: 12px; background: rgba(130, 105, 223, 0.13); color: #c5b7ff; font-size: 1rem; }
+.dashboard-date-copy { display: grid; gap: 2px; }
+.dashboard-date-copy > span { color: #969bb1; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.dashboard-date-copy strong { color: #f0effa; font-size: 0.9rem; font-weight: 650; }
 
 .dashboard-page .dashboard-panel {
   border-color: rgba(171, 163, 221, 0.13);
@@ -2190,16 +2195,23 @@ textarea {
 }
 
 .dashboard-metrics > div {
-  min-height: 150px;
+  min-height: 140px;
   border-color: rgba(174, 163, 230, 0.15);
   background: linear-gradient(145deg, rgba(27, 30, 52, 0.96), rgba(17, 20, 36, 0.96));
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.04);
 }
 
+.dashboard-metrics > div > div:first-child { height: 2px; opacity: 0.72; }
+.dashboard-metrics > div:nth-child(1) > div:first-child { background: linear-gradient(90deg, #8072c2, #8796d6); }
+.dashboard-metrics > div:nth-child(2) > div:first-child { background: linear-gradient(90deg, #58967f, #76ad96); }
+.dashboard-metrics > div:nth-child(3) > div:first-child { background: linear-gradient(90deg, #6887b8, #8193c6); }
+.dashboard-metrics > div:nth-child(4) > div:first-child { background: linear-gradient(90deg, #ad8e5f, #c1a26c); }
+.dashboard-metrics > div:nth-child(5) > div:first-child { background: linear-gradient(90deg, #aa7080, #c07c8b); }
+
 .dashboard-metrics > div > div > div:first-child > p:first-child {
   color: #a2a8be;
   font-size: 0.67rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.13em;
 }
 
 .dashboard-metrics > div > div > div:first-child > p:nth-child(2) { margin-top: 14px; font-size: 2.1rem; letter-spacing: -0.04em; }
@@ -2287,6 +2299,7 @@ textarea {
   .dashboard-hero { min-height: 0; align-items: flex-start; padding: 22px; }
   .dashboard-hero::after { right: -60px; opacity: 0.5; }
   .dashboard-hero h1 { font-size: 2rem; }
+  .dashboard-hero-actions { width: 100%; justify-content: space-between; }
   .dashboard-metrics > div { min-height: 128px; }
   .dashboard-toolbar { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .dashboard-search { grid-column: 1 / -1; }
@@ -2299,6 +2312,9 @@ textarea {
 @media (max-width: 480px) {
   .dashboard-hero { padding: 19px; }
   .dashboard-hero-copy > p:last-child { max-width: 270px; }
+  .dashboard-hero-actions { align-items: stretch; gap: 9px; }
+  .dashboard-date-card { min-width: 0; padding: 7px 9px; }
+  .dashboard-date-icon { width: 33px; height: 33px; }
   .dashboard-form-panel { padding: 19px !important; }
   .dashboard-page button.dashboard-button { min-height: 40px; padding-inline: 0.8rem; font-size: 0.82rem; }
   .dashboard-task-card > div:last-child button { flex: 1; }
