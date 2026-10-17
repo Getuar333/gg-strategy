@@ -1,3 +1,6 @@
+Official : https://gg-strategy.netlify.app/login
+
+
 # 🎯 G.G Strategy - Premium Productivity & Planning Application
 
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
