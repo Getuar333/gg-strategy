@@ -765,12 +765,12 @@ textarea {
   position: relative;
   z-index: 1;
   display: grid;
-  width: 65px;
-  height: 65px;
+  width: 88px;
+  height: 132px;
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 22px;
+  border-radius: 20px;
   background: linear-gradient(145deg, #854df1, #3868e7);
   box-shadow: 0 12px 30px rgba(69, 61, 198, 0.3);
   color: #fff;
@@ -785,7 +785,7 @@ textarea {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .information-profile-copy {
@@ -2110,7 +2110,7 @@ textarea {
   .calendar-weekdays { font-size: 0.58rem; }
   .calendar-events { padding: 15px; }
   .information-profile-card { align-items: flex-start; flex-wrap: wrap; padding: 20px; }
-  .information-avatar { width: 54px; height: 54px; border-radius: 18px; }
+  .information-avatar { width: 72px; height: 108px; border-radius: 18px; }
   .information-profile-copy { flex: 1; }
   .information-profile-cv { margin-left: 82px; }
   .information-details-grid,
