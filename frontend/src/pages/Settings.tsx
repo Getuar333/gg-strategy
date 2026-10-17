@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiMail, FiUser } from 'react-icons/fi';
+import { FiCheckCircle, FiMail, FiShield, FiUser } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { getErrorMessage } from '../lib/axios';
 import { authService } from '../services/api';
@@ -48,33 +48,44 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(145deg,#000_0%,#170024_48%,#050505_100%)] px-4 py-6 sm:px-6 lg:px-8">
-      <header className="mb-6 border-b border-white/10 pb-6">
-        <p className="text-xl font-bold text-cyan-600/75">Profile</p>
-        <p className="mt-2 max-w-2xl text-sm text-slate-300 sm:text-base">Menagjoni profilit tuaj</p>
+    <div className="settings-page min-h-screen px-4 py-7 sm:px-6 lg:px-8">
+      <header className="settings-heading">
+        <div className="settings-heading-mark"><FiUser /></div>
+        <div>
+          <p className="settings-eyebrow">ACCOUNT PREFERENCES</p>
+          <h1>Profile settings</h1>
+          <p>Keep your account details current and easy to recognize.</p>
+        </div>
       </header>
 
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="panel-glass max-w-2xl rounded-lg p-6"
+        className="settings-card"
       >
+        <div className="settings-card-heading">
+          <div className="settings-avatar">{(user?.fullName || 'U').trim().charAt(0).toUpperCase()}</div>
+          <div><h2>Your account</h2><p>Update the name and email address attached to your profile.</p></div>
+          <span className="settings-secure-badge"><FiShield /> Private</span>
+        </div>
+
         {success && (
-          <div className="mb-5 rounded-lg border border-emerald-300/35 bg-emerald-500/15 p-4 text-sm text-emerald-100">
+          <div className="settings-feedback settings-feedback--success">
+            <FiCheckCircle />
             {success}
           </div>
         )}
 
         {error && (
-          <div className="mb-5 rounded-lg border border-rose-400/35 bg-rose-950/45 p-4 text-sm text-rose-100">
+          <div className="settings-feedback settings-feedback--error" role="alert">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleUpdateProfile} className="space-y-5">
-          <label className="block">
-            <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
-              <FiUser className="h-4 w-4 text-pink-300" />
+        <form onSubmit={handleUpdateProfile} className="settings-form">
+          <label className="settings-field">
+            <span>
+              <FiUser />
               Emri dhe Mbiemri juaj:
             </span>
             <input
@@ -82,13 +93,13 @@ const Settings: React.FC = () => {
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
-              className="h-12 w-full rounded-lg border border-fuchsia-300/20 bg-black/50 px-4 text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/20"
+              className="settings-input"
             />
           </label>
 
-          <label className="block">
-            <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-200">
-              <FiMail className="h-4 w-4 text-cyan-300" />
+          <label className="settings-field">
+            <span>
+              <FiMail />
               Email adresa:
             </span>
             <input
@@ -96,11 +107,11 @@ const Settings: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="h-12 w-full rounded-lg border border-fuchsia-300/20 bg-black/50 px-4 text-white outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/20"
+              className="settings-input"
             />
           </label>
 
-          <Button type="submit" loading={loading} size="lg" className="w-full">
+          <Button type="submit" loading={loading} size="lg" className="settings-save-button">
             Ruaj Ndryshimet
           </Button>
         </form>

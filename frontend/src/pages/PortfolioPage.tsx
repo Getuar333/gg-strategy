@@ -1,6 +1,8 @@
-import React from 'react';
-import { FiGithub } from 'react-icons/fi';
+import React, { useEffect, useState } from 'react';
+import { FiArrowUpRight, FiGithub, FiImage, FiTrash2, FiUploadCloud } from 'react-icons/fi';
 import GlassPanel from '../components/GlassPanel';
+
+const portfolioImageStorageKey = 'gg-strategy:portfolio-project-images';
 
 const projects = [
   {
@@ -56,33 +58,128 @@ const projects = [
   
 ];
 const PortfolioPage: React.FC = () => {
+  const [projectImages, setProjectImages] = useState<Record<string, string>>({});
+  const [imageMessage, setImageMessage] = useState('');
+
+  useEffect(() => {
+    try {
+      const savedImages = localStorage.getItem(portfolioImageStorageKey);
+      if (savedImages) setProjectImages(JSON.parse(savedImages) as Record<string, string>);
+    } catch {
+      setImageMessage('Saved project images could not be read in this browser.');
+    }
+  }, []);
+
+  const handleImageUpload = async (projectTitle: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setImageMessage('Choose an image file to add a project preview.');
+      input.value = '';
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      setImageMessage('Choose an image smaller than 15 MB.');
+      input.value = '';
+      return;
+    }
+
+    try {
+      const imageData = await new Promise<string>((resolve, reject) => {
+        const objectUrl = URL.createObjectURL(file);
+        const image = new Image();
+        image.onload = () => {
+          const maxWidth = 1280;
+          const scale = Math.min(1, maxWidth / image.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          const context = canvas.getContext('2d');
+          if (!context) {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error('Image processing is unavailable.'));
+            return;
+          }
+          try {
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.78));
+          } catch {
+            reject(new Error('Image processing failed.'));
+          } finally {
+            URL.revokeObjectURL(objectUrl);
+          }
+        };
+        image.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error('Image could not be opened.'));
+        };
+        image.src = objectUrl;
+      });
+
+      const nextImages = { ...projectImages, [projectTitle]: imageData };
+      localStorage.setItem(portfolioImageStorageKey, JSON.stringify(nextImages));
+      setProjectImages(nextImages);
+      setImageMessage(`${projectTitle} image saved in this browser.`);
+    } catch {
+      setImageMessage('The image could not be saved. Try a smaller image.');
+    } finally {
+      input.value = '';
+    }
+  };
+
+  const removeImage = (projectTitle: string) => {
+    const nextImages = { ...projectImages };
+    delete nextImages[projectTitle];
+    try {
+      localStorage.setItem(portfolioImageStorageKey, JSON.stringify(nextImages));
+      setProjectImages(nextImages);
+      setImageMessage(`${projectTitle} image removed.`);
+    } catch {
+      setImageMessage('The image could not be removed in this browser.');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(255,80,80,0.18),_transparent_35%),linear-gradient(140deg,_#04060b_0%,_#0a1019_100%)] px-4 py-6 sm:px-6 lg:px-8">
-      <header className="mb-6">
-        <p className="text-xs uppercase tracking-[0.35em] text-cyan-300/70">Portfolio from Geti</p>
-        <p className="mt-2 max-w-2xl text-sm text-slate-400">This portfolio showcases the projects I have worked on over the years.</p>
+    <div className="portfolio-page feature-page px-4 py-7 sm:px-6 lg:px-8">
+      <header className="feature-heading portfolio-heading mb-6">
+        <div>
+          <p className="feature-eyebrow"><FiGithub /> Selected work</p>
+          <h1>Portfolio</h1>
+          <p className="feature-heading-copy">A collection of projects, tools, and ideas brought to life.</p>
+        </div>
       </header>
-      <div className="grid gap-5 lg:grid-cols-2">
+
+      {imageMessage && <p className="portfolio-image-message" aria-live="polite">{imageMessage}</p>}
+
+      <div className="portfolio-grid">
         {projects.map((project) => (
-          <GlassPanel key={project.title} className="flex flex-col gap-4">
-            <div className="h-36 rounded-2xl border border-white/10 bg-[linear-gradient(135deg,_rgba(255,120,72,0.25),_rgba(34,211,238,0.2))]" />
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-xl font-semibold text-white">{project.title}</h2>
-                <p className="mt-1 text-sm text-slate-400">{project.description}</p>
+          <GlassPanel key={project.title} className="portfolio-project-card">
+            <div className={`portfolio-project-visual${projectImages[project.title] ? ' has-image' : ''}`}>
+              {projectImages[project.title] ? (
+                <img src={projectImages[project.title]} alt={`${project.title} project preview`} />
+              ) : (
+                <div className="portfolio-project-placeholder"><FiImage /><span>Project preview</span></div>
+              )}
+              <div className="portfolio-image-actions">
+                <label className="portfolio-image-upload">
+                  <FiUploadCloud />
+                  {projectImages[project.title] ? 'Change image' : 'Add image'}
+                  <input type="file" accept="image/*" aria-label={`Add an image for ${project.title}`} onChange={(event) => void handleImageUpload(project.title, event)} />
+                </label>
+                {projectImages[project.title] && (
+                  <button type="button" onClick={() => removeImage(project.title)} className="portfolio-image-remove" aria-label={`Remove image for ${project.title}`}><FiTrash2 /></button>
+                )}
               </div>
+            </div>
+            <div className="portfolio-project-copy">
+              <div className="portfolio-project-title-row"><h2>{project.title}</h2><span>{project.date}</span></div>
+              <p className="portfolio-project-description">{project.description}</p>
             </div>
             <div className="flex flex-wrap gap-2">
-              {project.technologies.map((tech) => (
-                <span key={tech} className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-300">{tech}</span>
-              ))}
+              {project.technologies.map((tech) => <span key={tech} className="portfolio-tech-chip">{tech}</span>)}
             </div>
-            <div className="flex items-center justify-between text-sm text-slate-400">
-              <span>Created {project.date}</span>
-              <div className="flex items-center gap-2">
-                <a href={project.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-white"><FiGithub /> View Repository</a>
-              </div>
-            </div>
+            <a href={project.github} target="_blank" rel="noreferrer" className="portfolio-repository-link"><FiGithub /> View repository <FiArrowUpRight /></a>
           </GlassPanel>
         ))}
       </div>

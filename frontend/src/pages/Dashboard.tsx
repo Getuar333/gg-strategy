@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiCalendar, FiCheckCircle, FiClock, FiEdit2, FiPlus, FiSearch, FiTrash2 } from 'react-icons/fi';
+import { FiAlertCircle, FiCalendar, FiCheckCircle, FiClock, FiEdit2, FiPlus, FiSearch, FiTarget, FiTrash2 } from 'react-icons/fi';
 import { getErrorMessage } from '../lib/axios';
 import { isEndTimeValid } from '../lib/taskUtils';
 import { taskService } from '../services/api';
 import { CreateTaskInput, Task, TaskPriority, TaskStatus, UpdateTaskInput } from '../types';
-import AnimatedMetricCard from '../components/AnimatedMetricCard';
 import Button from '../components/Button';
 import GlassPanel from '../components/GlassPanel';
 import storyImage from "../assets/G.G Strategy-story.png";
@@ -108,14 +107,9 @@ const Dashboard: React.FC = () => {
     const pending = tasks.filter((task) => task.status === 'pending').length;
     const overdue = tasks.filter((task) => task.status !== 'completed' && task.dueDate && task.dueDate < today).length;
 
-    return [
-      { label: 'Total tasks', value: tasks.length, detail: 'Across every category', accent: 'from-[#8173c9] to-[#7486d8]', icon: <FiCheckCircle /> },
-      { label: 'Completed', value: completed, detail: 'Goals achieved', accent: 'from-[#4d9d82] to-[#70b39a]', icon: <FiCheckCircle /> },
-      { label: 'In progress', value: inProgress, detail: 'Moving forward', accent: 'from-[#648bc6] to-[#788dc9]', icon: <FiClock /> },
-      { label: 'Pending', value: pending, detail: 'Ready when you are', accent: 'from-[#b99156] to-[#c5a36e]', icon: <FiCalendar /> },
-      { label: 'Overdue', value: overdue, detail: 'Needs attention', accent: 'from-[#b86d80] to-[#c27d8d]', icon: <FiClock /> },
-    ];
+    return { completed, inProgress, pending, overdue };
   }, [tasks]);
+  const completionPercentage = tasks.length ? Math.round((stats.completed / tasks.length) * 100) : 0;
 
   const upcomingTasks = useMemo(() => {
     return tasks.filter((task) => task.status !== 'completed').slice(0, 4);
@@ -251,13 +245,6 @@ const Dashboard: React.FC = () => {
             <p className="mt-2 max-w-2xl text-sm text-slate-400">Plan your priorities, keep your day moving.</p>
           </div>
           <div className="dashboard-hero-actions">
-            <div className="dashboard-date-card">
-              <span className="dashboard-date-icon"><FiCalendar /></span>
-              <span className="dashboard-date-copy">
-                <span>Today</span>
-                <strong>{new Intl.DateTimeFormat('en', { weekday: 'short', month: 'short', day: 'numeric' }).format(new Date())}</strong>
-              </span>
-            </div>
             <Button type="button" className="dashboard-button dashboard-button--primary" onClick={() => setShowCreateForm((value) => !value)}>
               <FiPlus className="h-4 w-4" />
               {showCreateForm ? 'Close panel' : 'New task'}
@@ -265,10 +252,40 @@ const Dashboard: React.FC = () => {
           </div>
         </header>
 
-        <section className="dashboard-metrics mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-          {stats.map((stat) => (
-            <AnimatedMetricCard key={stat.label} title={stat.label} value={stat.value} detail={stat.detail} accent={stat.accent} icon={stat.icon} />
-          ))}
+        <section className="dashboard-overview mb-6" aria-label="Task progress overview">
+          <article className="dashboard-momentum-card">
+            <div className="dashboard-momentum-heading">
+              <span className="dashboard-momentum-icon"><FiTarget /></span>
+              <div><p>YOUR MOMENTUM</p><h2>A plan in motion</h2></div>
+            </div>
+            <div className="dashboard-momentum-main">
+              <div>
+                <span className="dashboard-momentum-label">Tasks completed</span>
+                <p className="dashboard-momentum-count"><strong>{stats.completed}</strong><span>of {tasks.length}</span></p>
+                <p className="dashboard-momentum-caption">{tasks.length === 0 ? 'Add a task and start building momentum.' : `${tasks.length - stats.completed} ${tasks.length - stats.completed === 1 ? 'step' : 'steps'} left in your plan.`}</p>
+              </div>
+              <div className="dashboard-progress-ring" role="img" aria-label={`${completionPercentage}% of tasks completed`} style={{ '--progress': `${completionPercentage}%` } as React.CSSProperties}>
+                <span>{completionPercentage}<small>%</small></span>
+              </div>
+            </div>
+            <div className="dashboard-progress-track"><span style={{ width: `${completionPercentage}%` }} /></div>
+            <div className="dashboard-momentum-footer"><span>Completion</span><strong>{stats.completed} {stats.completed === 1 ? 'task' : 'tasks'} done</strong></div>
+          </article>
+
+          <div className="dashboard-quick-stats">
+            {[
+              { label: 'In focus', detail: 'Currently active', value: stats.inProgress, icon: <FiClock />, tone: 'focus' },
+              { label: 'Coming up', detail: 'Ready to get started', value: stats.pending, icon: <FiCalendar />, tone: 'upcoming' },
+              { label: 'Past due', detail: 'Worth a quick review', value: stats.overdue, icon: <FiAlertCircle />, tone: 'overdue' },
+            ].map((stat) => (
+              <article className={`dashboard-quick-stat dashboard-quick-stat--${stat.tone}`} key={stat.label}>
+                <div className="dashboard-quick-stat-top"><span>{stat.label}</span><span className="dashboard-quick-stat-icon">{stat.icon}</span></div>
+                <strong className="dashboard-quick-stat-value">{stat.value}</strong>
+                <span className="dashboard-quick-stat-detail">{stat.detail}</span>
+                <span className="dashboard-quick-stat-orb" aria-hidden="true" />
+              </article>
+            ))}
+          </div>
         </section>
 
         {error && (
