@@ -53,8 +53,6 @@ const InformationPage: React.FC = () => {
       <header className="feature-heading mb-7">
         <div>
           <p className="feature-eyebrow"><FiUser /> Information</p>
-          <h1>My Information</h1>
-          <p className="feature-heading-copy">A quick introduction and the best ways to reach me.</p>
         </div>
       </header>
 
@@ -62,20 +60,19 @@ const InformationPage: React.FC = () => {
         <div className="information-profile-glow" aria-hidden="true" />
         <div className="information-avatar" aria-hidden="true">GG</div>
         <div className="information-profile-copy">
-          <p className="information-overline">Personal profile</p>
+          <p className="information-overline">Profile</p>
           <h2>{fullName}</h2>
           <p>Based in {personalInformation.location}</p>
         </div>
-        <span className="information-profile-badge"><FiCheck /> Contact card</span>
+        <span className="information-profile-badge"><FiCheck /> Contact</span>
       </section>
 
       <section className="information-section" aria-labelledby="personal-details-title">
         <div className="information-section-heading">
           <div>
-            <p className="feature-eyebrow"><FiUser /> Get in touch</p>
-            <h2 id="personal-details-title">Personal details</h2>
+            <h2 id="personal-details-title">Details</h2>
           </div>
-          <p>Information displayed directly on this platform</p>
+          <p>Information contacted on this platform</p>
         </div>
 
         <div className="information-details-grid">
@@ -107,7 +104,7 @@ const InformationPage: React.FC = () => {
       <section className="information-section information-social-section" aria-labelledby="social-profiles-title">
         <div className="information-section-heading">
           <div>
-            <h2 id="social-profiles-title">Social media</h2>
+            <h2 id="social-profiles-title">Mediat sociale</h2>
           </div>
           <p>Choose a platform to connect</p>
         </div>

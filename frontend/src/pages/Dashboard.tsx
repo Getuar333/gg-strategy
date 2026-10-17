@@ -241,7 +241,6 @@ const Dashboard: React.FC = () => {
         <header className="dashboard-hero mb-6 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-black/30 px-6 py-6 backdrop-blur-2xl lg:flex-row lg:items-end lg:justify-between">
           <div className="dashboard-hero-copy">
             <p className="dashboard-eyebrow text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Your strategy space</p>
-            <p className="mt-2 max-w-2xl text-sm text-slate-400">Plan your priorities, keep your day moving.</p>
           </div>
           <div className="dashboard-hero-actions">
             <Button type="button" className="dashboard-button dashboard-button--primary" onClick={() => setShowCreateForm((value) => !value)}>

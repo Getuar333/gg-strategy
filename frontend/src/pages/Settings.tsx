@@ -52,23 +52,18 @@ const Settings: React.FC = () => {
       <header className="settings-heading">
         <div className="settings-heading-mark"><FiUser /></div>
         <div>
-          <p className="settings-eyebrow">ACCOUNT PREFERENCES</p>
-          <h1>Profile settings</h1>
-          <p>Keep your account details current and easy to recognize.</p>
+          <h1>Your profile</h1>
+          <p>Your account details.</p>
         </div>
       </header>
-
       <motion.section
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="settings-card"
-      >
+        className="settings-card">
         <div className="settings-card-heading">
           <div className="settings-avatar">{(user?.fullName || 'U').trim().charAt(0).toUpperCase()}</div>
-          <div><h2>Your account</h2><p>Update the name and email address attached to your profile.</p></div>
-          <span className="settings-secure-badge"><FiShield /> Private</span>
+          <span className="settings-secure-badge"><FiShield />Statusi - Private</span>
         </div>
-
         {success && (
           <div className="settings-feedback settings-feedback--success">
             <FiCheckCircle />

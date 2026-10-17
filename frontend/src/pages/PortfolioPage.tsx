@@ -4,8 +4,10 @@ import GlassPanel from '../components/GlassPanel';
 import ubtFindPointImage from '../assets/ubt-findpoint.png';
 import freelancerMarketplaceImage from '../assets/freelancer-marketplace.png';
 /*
- * Add each screenshot to src/assets, then uncomment its import here.
- * Leave a project's `image` as undefined when it has no screenshot yet.
+
+
+
+
  *
  * import ubtFindPointImage from '../assets/ubt-findpoint.png';
  * import freelancerMarketplaceImage from '../assets/freelancer-marketplace.png';
@@ -101,7 +103,7 @@ const PortfolioPage: React.FC = () => (
             {project.image ? (
               <img src={project.image} alt={`${project.title} project preview`} />
             ) : (
-              <div className="portfolio-project-placeholder"><FiImage /><span>Project image can be added in code</span></div>
+              <div className="portfolio-project-placeholder"><FiImage /><span>Image not added</span></div>
             )}
           </div>
           <div className="portfolio-project-copy">
