@@ -140,15 +140,15 @@ const AIAssistantPage: React.FC = () => {
                 <span className="ai-empty-icon"><FiMessageCircle /></span>
                 <span className="ai-message-role">Workspace notice</span>
                 <h3>Ready when you are</h3>
-                <p>This screen does not send prompts to an AI or generate replies. Add your ChatGPT URL to open it in a separate tab.</p>
-                {openableUrl ? <button type="button" onClick={openChatGPT} className="ai-open-link">Open ChatGPT <FiArrowUpRight /></button> : <span className="ai-setup-hint">Add a link in AI Configuration below.</span>}
+                <p>This screen does not send prompts to an AI or generate replies. Add your AI Assistant URL to open it in a separate tab.</p>
+                {openableUrl ? <button type="button" onClick={openChatGPT} className="ai-open-link">Open AI Assistant <FiArrowUpRight /></button> : <span className="ai-setup-hint">Add a link in AI Configuration below.</span>}
               </div>
             ) : (
               <div className="ai-empty-state ai-empty-state--disabled">
                 <span className="ai-empty-icon"><FiCpu /></span>
                 <span className="ai-message-role">Assistant disabled</span>
                 <h3>AI Assistant is turned off</h3>
-                <p>Enable it in AI Configuration when you want to use the external ChatGPT link.</p>
+                <p>Enable it in AI Configuration when you want to use the external AI Assistant link.</p>
               </div>
             )}
             {messageDraft.trim() && config.enabled && (
@@ -177,9 +177,9 @@ const AIAssistantPage: React.FC = () => {
           </div>
 
           <form onSubmit={saveConfig} className="ai-config-form">
-            <label className="ai-config-label" htmlFor="chatgpt-url">ChatGPT URL</label>
-            <input id="chatgpt-url" type="url" value={urlDraft} onChange={(event) => { setUrlDraft(event.target.value); setConfigError(''); }} placeholder="https://chatgpt.com" className="feature-input" />
-            <p className="ai-config-help">Use the link you want to open. A regular ChatGPT URL cannot power chat inside this page.</p>
+            <label className="ai-config-label" htmlFor="ai-url">AI Assistant URL</label>
+            <input id="ai-url" type="url" value={urlDraft} onChange={(event) => { setUrlDraft(event.target.value); setConfigError(''); }} placeholder="https://your-ai-assistant.com" className="feature-input" />
+            <p className="ai-config-help">Use the link you want to open. A regular AI Assistant URL cannot power chat inside this page.</p>
 
             <label className="ai-enabled-toggle">
               <span><strong>AI Assistant</strong><small>{config.enabled ? 'Enabled for this account' : 'Currently disabled'}</small></span>
@@ -192,11 +192,11 @@ const AIAssistantPage: React.FC = () => {
 
             <div className="ai-config-actions">
               <button type="submit" className="feature-button" disabled={loading}>Save configuration</button>
-              <button type="button" onClick={openChatGPT} className="feature-button feature-button--quiet" disabled={!openableUrl || !config.enabled}><FiExternalLink /> Open ChatGPT</button>
+              <button type="button" onClick={openChatGPT} className="feature-button feature-button--quiet" disabled={!openableUrl || !config.enabled}><FiExternalLink /> Open AI Assistant</button>
             </div>
           </form>
 
-          {!config.url && <div className="ai-config-empty"><FiArrowUpRight /><span>Add a ChatGPT URL to enable the external shortcut.</span></div>}
+          {!config.url && <div className="ai-config-empty"><FiArrowUpRight /><span>Add an AI Assistant URL to enable the external shortcut.</span></div>}
           <div className="ai-config-storage"><FiShield /><span>Settings are saved in this browser for your signed-in account. No API keys are stored.</span></div>
         </aside>
       </div>

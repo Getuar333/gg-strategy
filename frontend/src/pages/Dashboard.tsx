@@ -242,34 +242,35 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-8">
-      <div className="relative z-10 mx-auto max-w-7xl">
-        <header className="mb-6 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-black/30 px-6 py-6 backdrop-blur-2xl lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">take your risk</p>
-            <p className="mt-2 max-w-2xl text-sm text-slate-400">Create your task with precision , execute with focus.</p>
+    <div className="dashboard-page relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-8">
+      <div className="dashboard-content relative z-10 mx-auto max-w-7xl">
+        <header className="dashboard-hero mb-6 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-black/30 px-6 py-6 backdrop-blur-2xl lg:flex-row lg:items-end lg:justify-between">
+          <div className="dashboard-hero-copy">
+            <p className="dashboard-eyebrow text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Your strategy space</p>
+            <h1>Dashboard</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-400">Create your task with precision, execute with focus.</p>
           </div>
-          <Button type="button" onClick={() => setShowCreateForm((value) => !value)}>
+          <Button type="button" className="dashboard-button dashboard-button--primary" onClick={() => setShowCreateForm((value) => !value)}>
             <FiPlus className="h-4 w-4" />
             {showCreateForm ? 'Close panel' : 'New task'}
           </Button>
         </header>
 
-        <section className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <section className="dashboard-metrics mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {stats.map((stat) => (
             <AnimatedMetricCard key={stat.label} title={stat.label} value={stat.value} detail={stat.detail} accent={stat.accent} icon={stat.icon} />
           ))}
         </section>
 
         {error && (
-          <div className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-100">
+          <div className="dashboard-error mb-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-100">
             {error}
           </div>
         )}
 
         {showCreateForm && (
-          <GlassPanel className="mb-6 p-6">
-            <form onSubmit={handleCreateTask} className="grid gap-4 lg:grid-cols-2">
+          <GlassPanel className="dashboard-panel dashboard-form-panel mb-6 p-6">
+            <form onSubmit={handleCreateTask} className="dashboard-form grid gap-4 lg:grid-cols-2">
               <div className="lg:col-span-2 flex items-center justify-between">
                 <div>
                   <p className="text-lg font-semibold text-white">Create a new mission</p>
@@ -318,22 +319,22 @@ const Dashboard: React.FC = () => {
               </label>
               {timeError && <p className="lg:col-span-2 text-sm text-rose-200">{timeError}</p>}
               <div className="lg:col-span-2 flex flex-wrap justify-end gap-3">
-                <Button type="button" variant="secondary" onClick={resetDraft}>Cancel</Button>
-                <Button type="submit" loading={saving}>Create task</Button>
+                <Button type="button" variant="secondary" className="dashboard-button dashboard-button--secondary" onClick={resetDraft}>Cancel</Button>
+                <Button type="submit" className="dashboard-button dashboard-button--primary" loading={saving}>Create task</Button>
               </div>
             </form>
           </GlassPanel>
         )}
 
         <div className="grid gap-6 xl:grid-cols-[1.6fr_0.9fr]">
-          <GlassPanel>
-            <div className="flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
+          <GlassPanel className="dashboard-panel dashboard-board-panel">
+            <div className="dashboard-board-header flex flex-col gap-4 border-b border-white/10 pb-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="text-sm font-semibold text-black">Task board</p>
                 <p className="text-sm text-slate-400">Search and filter all tasks.</p>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <label className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">
+              <div className="dashboard-toolbar flex flex-wrap gap-3">
+                <label className="dashboard-search flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300">
                   <FiSearch className="h-4 w-4" />
                   <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="bg-transparent text-sm outline-none" placeholder="Search tasks" />
                 </label>
@@ -358,9 +359,9 @@ const Dashboard: React.FC = () => {
             ) : (
               <div className="mt-5 space-y-4">
                 {filteredTasks.map((task) => (
-                  <motion.article key={task.id} whileHover={{ y: -2 }} className="rounded-3xl border border-white/10 bg-black/30 p-4">
+                  <motion.article key={task.id} whileHover={{ y: -2 }} className="dashboard-task-card rounded-3xl border border-white/10 bg-black/30 p-4">
                     {editingTaskId === task.id ? (
-                      <form onSubmit={(event) => void handleUpdateTask(event, task)} className="space-y-4">
+                      <form onSubmit={(event) => void handleUpdateTask(event, task)} className="dashboard-edit-form space-y-4">
                         <div className="grid gap-4 md:grid-cols-2">
                           <label className="md:col-span-2 block">
                             <span className="mb-2 block text-sm font-medium text-slate-300">Title</span>
@@ -404,8 +405,8 @@ const Dashboard: React.FC = () => {
                           </label>
                         </div>
                         <div className="flex flex-wrap justify-end gap-2">
-                          <Button type="button" variant="secondary" onClick={cancelEditingTask}>Cancel</Button>
-                          <Button type="submit" loading={saving}>Save changes</Button>
+                          <Button type="button" variant="secondary" className="dashboard-button dashboard-button--secondary" onClick={cancelEditingTask}>Cancel</Button>
+                          <Button type="submit" className="dashboard-button dashboard-button--primary" loading={saving}>Save changes</Button>
                         </div>
                       </form>
                     ) : (
@@ -429,15 +430,15 @@ const Dashboard: React.FC = () => {
                           <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">{task.startTime || '--:--'} → {task.endTime || '--:--'}</span>
                         </div>
                         <div className="mt-5 flex flex-wrap gap-2">
-                          <Button type="button" variant="secondary" onClick={() => startEditingTask(task)}>
+                          <Button type="button" variant="secondary" className="dashboard-button dashboard-button--secondary" onClick={() => startEditingTask(task)}>
                             <FiEdit2 className="h-4 w-4" /> Edit
                           </Button>
                           {task.status !== 'completed' && (
-                            <Button type="button" variant="outline" onClick={() => void handleCompleteTask(task.id)}>
+                            <Button type="button" variant="outline" className="dashboard-button dashboard-button--outline" onClick={() => void handleCompleteTask(task.id)}>
                               <FiCheckCircle className="h-4 w-4" /> Complete
                             </Button>
                           )}
-                          <Button type="button" variant="danger" onClick={() => void handleDeleteTask(task.id)}>
+                          <Button type="button" variant="danger" className="dashboard-button dashboard-button--danger" onClick={() => void handleDeleteTask(task.id)}>
                             <FiTrash2 className="h-4 w-4" /> Delete
                           </Button>
                         </div>
@@ -449,8 +450,8 @@ const Dashboard: React.FC = () => {
             )}
           </GlassPanel>
 
-          <div className="space-y-6">
-            <GlassPanel>
+          <div className="dashboard-sidebar space-y-6">
+            <GlassPanel className="dashboard-panel dashboard-upcoming-panel">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-white">Upcoming task</p>
@@ -461,7 +462,7 @@ const Dashboard: React.FC = () => {
                   <p className="rounded-2xl border border-dashed border-white/10 bg-white/5 p-4 text-sm text-slate-400">No upcoming tasks right now.</p>
                 ) : (
                   upcomingTasks.map((task) => (
-                    <div key={task.id} className="rounded-2xl border border-white/10 bg-black/30 p-3">
+                    <div key={task.id} className="dashboard-upcoming-card rounded-2xl border border-white/10 bg-black/30 p-3">
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-sm font-medium text-white">{task.title.replace(/^\p{Emoji}\s*/u, '')}</p>
                         <span className="text-xs uppercase tracking-[0.3em] text-cyan-200">{task.priority}</span>
@@ -472,7 +473,7 @@ const Dashboard: React.FC = () => {
                 )}
               </div>
             </GlassPanel>
-            <GlassPanel className="overflow-hidden p-0"><img src={storyImage} alt="G.G Strategy" className="w-full h-full object-cover rounded-[inherit]"/>
+            <GlassPanel className="dashboard-story-panel overflow-hidden p-0"><img src={storyImage} alt="G.G Strategy" className="w-full h-full object-cover rounded-[inherit]"/>
             </GlassPanel>
           </div>
         </div>
