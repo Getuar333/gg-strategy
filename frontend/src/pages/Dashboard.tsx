@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiAlertCircle, FiCalendar, FiCheckCircle, FiClock, FiEdit2, FiPlus, FiSearch, FiTarget, FiTrash2 } from 'react-icons/fi';
+import { FiAlertCircle, FiCalendar, FiCheckCircle, FiClock, FiEdit2, FiPlus, FiSearch, FiTarget, FiTrash2, FiX } from 'react-icons/fi';
 import { getErrorMessage } from '../lib/axios';
 import { isEndTimeValid } from '../lib/taskUtils';
 import { taskService } from '../services/api';
@@ -243,9 +243,9 @@ const Dashboard: React.FC = () => {
             <p className="dashboard-eyebrow text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Your strategy space</p>
           </div>
           <div className="dashboard-hero-actions">
-            <Button type="button" className="dashboard-button dashboard-button--primary" onClick={() => setShowCreateForm((value) => !value)}>
-              <FiPlus className="h-4 w-4" />
-              {showCreateForm ? 'Close panel' : 'New task'}
+            <Button type="button" className="dashboard-button dashboard-button--primary dashboard-hero-button" aria-expanded={showCreateForm} onClick={() => setShowCreateForm((value) => !value)}>
+              <span className="dashboard-hero-button-icon">{showCreateForm ? <FiX /> : <FiPlus />}</span>
+              <span>{showCreateForm ? 'Close panel' : 'New task'}</span>
             </Button>
           </div>
         </header>
