@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaFacebook, FaGithub, FaLinkedinIn } from 'react-icons/fa';
-import { FiArrowUpRight, FiCheck, FiCopy, FiGlobe, FiMail, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
+import { FiArrowUpRight, FiCheck, FiCopy, FiMail, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
 
 const personalInformation = {
   firstName: 'Getuar',

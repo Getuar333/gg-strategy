@@ -2333,19 +2333,11 @@ textarea {
 .portfolio-page .portfolio-project-card { display: flex; flex-direction: column; gap: 17px; overflow: hidden; padding: 15px; border-color: rgba(171, 163, 221, 0.14); background: linear-gradient(145deg, rgba(22, 25, 44, 0.94), rgba(14, 17, 31, 0.96)); transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease; }
 .portfolio-page .portfolio-project-card:hover { transform: translateY(-4px); border-color: rgba(165, 145, 255, 0.31); box-shadow: 0 26px 65px rgba(0, 0, 0, 0.35), 0 0 35px rgba(111, 83, 213, 0.08); }
 .portfolio-project-visual { position: relative; display: grid; min-height: 225px; overflow: hidden; place-items: center; border: 1px solid rgba(175, 167, 224, 0.13); border-radius: 20px; background: radial-gradient(ellipse at 15% 5%, rgba(121, 92, 219, 0.26), transparent 44%), linear-gradient(135deg, rgba(49, 50, 82, 0.78), rgba(16, 22, 40, 0.95)); }
-.portfolio-project-visual::after { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 48%, rgba(5, 7, 16, 0.68)); content: ""; pointer-events: none; }
 .portfolio-project-visual > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 450ms ease; }
 .portfolio-project-card:hover .portfolio-project-visual > img { transform: scale(1.035); }
-.portfolio-project-placeholder { display: grid; justify-items: center; gap: 10px; color: #8d87b5; }
+.portfolio-project-placeholder { position: relative; z-index: 1; display: grid; justify-items: center; gap: 10px; color: #8d87b5; }
 .portfolio-project-placeholder svg { width: 32px; height: 32px; opacity: 0.85; }
-.portfolio-project-placeholder span { color: #a3a1bd; font-size: 0.78rem; letter-spacing: 0.06em; }
-.portfolio-image-actions { position: absolute; right: 12px; bottom: 12px; z-index: 1; display: flex; align-items: center; gap: 7px; }
-.portfolio-image-upload,
-.portfolio-image-remove { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; gap: 7px; padding: 0 12px; border: 1px solid rgba(226, 222, 255, 0.2); border-radius: 11px; background: rgba(11, 13, 26, 0.78); color: #f1efff; font-size: 0.74rem; font-weight: 650; cursor: pointer; backdrop-filter: blur(12px); transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
-.portfolio-image-upload:hover,
-.portfolio-image-remove:hover { transform: translateY(-1px); border-color: rgba(199, 184, 255, 0.52); background: rgba(93, 71, 166, 0.82); }
-.portfolio-image-upload input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; }
-.portfolio-image-remove { width: 36px; padding: 0; color: #ffc3d0; }
+.portfolio-project-placeholder span { color: #a3a1bd; font-size: 0.74rem; letter-spacing: 0.04em; }
 .portfolio-project-copy { display: grid; gap: 7px; }
 .portfolio-project-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .portfolio-project-title-row h2 { margin: 0; color: #f6f5ff; font-size: 1.16rem; font-weight: 700; letter-spacing: -0.025em; }
@@ -2355,7 +2347,6 @@ textarea {
 .portfolio-repository-link { display: inline-flex; min-height: 40px; align-items: center; gap: 9px; align-self: flex-start; margin-top: auto; padding: 0 13px; border: 1px solid rgba(173, 164, 219, 0.17); border-radius: 12px; background: rgba(255, 255, 255, 0.045); color: #e4e1f6; font-size: 0.78rem; font-weight: 650; text-decoration: none; transition: border-color 160ms ease, background 160ms ease; }
 .portfolio-repository-link:hover { border-color: rgba(185, 167, 255, 0.38); background: rgba(126, 102, 211, 0.14); }
 .portfolio-repository-link > span { color: #afa0f0; }
-.portfolio-image-message { margin: 0 0 16px; color: #c7baff; font-size: 0.8rem; }
 
 /* Modern profile settings */
 .settings-page { position: relative; min-height: 100vh; overflow: hidden; background: radial-gradient(ellipse at 8% 2%, rgba(112, 78, 218, 0.14), transparent 35rem), radial-gradient(ellipse at 92% 78%, rgba(50, 95, 187, 0.1), transparent 35rem); color: #f6f5ff; }
