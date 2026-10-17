@@ -2200,10 +2200,11 @@ textarea {
 .dashboard-hero {
   position: relative;
   overflow: hidden;
-  min-height: 184px;
+  min-height: 128px;
   align-items: flex-end;
   gap: 18px;
-  padding: 22px 26px;
+  padding: 14px 23px;
+  border-radius: 28px;
   border-color: rgba(176, 164, 238, 0.19);
   background:
     radial-gradient(ellipse at 83% 0%, rgba(107, 79, 216, 0.17), transparent 25rem),
@@ -2241,12 +2242,14 @@ textarea {
   pointer-events: none;
 }
 
-.dashboard-hero-copy { position: relative; z-index: 1; }
+.dashboard-hero-copy { position: relative; z-index: 2; }
+.dashboard-hero-flower { position: absolute; z-index: 1; top: 50%; right: 23%; width: 156px; height: 112px; transform: translateY(-50%); opacity: 0.96; pointer-events: none; }
+.dashboard-hero-flower img { display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(187, 211, 255, 0.42)) drop-shadow(0 0 22px rgba(142, 129, 255, 0.24)); }
 .dashboard-eyebrow { display: flex; align-items: center; gap: 11px; margin: 0; color: #c0afff !important; letter-spacing: 0.24em !important; text-shadow: 0 0 22px rgba(168, 139, 255, 0.22); }
 .dashboard-eyebrow::before { width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: #a992ff; box-shadow: 0 0 12px rgba(169, 146, 255, 0.78); content: ""; }
 .dashboard-hero h1 { margin: 10px 0 0; color: #fbfaff; font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700; letter-spacing: -0.045em; line-height: 1.06; }
 .dashboard-hero-copy > p:last-child { margin-top: 12px; color: #a6abc0; font-size: 0.96rem; }
-.dashboard-hero-actions { position: relative; z-index: 1; display: flex; align-items: center; justify-content: flex-end; gap: 14px; margin-left: auto; }
+.dashboard-hero-actions { position: relative; z-index: 2; display: flex; align-items: center; justify-content: flex-end; gap: 14px; margin-left: auto; }
 
 .dashboard-page .dashboard-panel {
   border-color: rgba(171, 163, 221, 0.13);
@@ -2381,8 +2384,9 @@ textarea {
 
 @media (max-width: 760px) {
   .dashboard-page { padding-top: 18px; }
-  .dashboard-hero { min-height: 154px; flex-direction: row; align-items: flex-end; justify-content: space-between; padding: 21px; }
+  .dashboard-hero { min-height: 118px; flex-direction: row; align-items: flex-end; justify-content: space-between; padding: 14px 18px; }
   .dashboard-hero::after { right: -60px; opacity: 0.5; }
+  .dashboard-hero-flower { right: 20%; width: 122px; height: 88px; }
   .dashboard-hero h1 { font-size: 2rem; }
   .dashboard-hero-actions { width: auto; justify-content: flex-end; }
   .dashboard-toolbar { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
@@ -2394,9 +2398,10 @@ textarea {
 }
 
 @media (max-width: 480px) {
-  .dashboard-hero { min-height: 148px; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 19px; }
+  .dashboard-hero { min-height: 122px; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 14px 16px; }
+  .dashboard-hero-flower { top: 0; right: 24%; width: 84px; height: 66px; transform: none; opacity: 0.62; }
   .dashboard-hero-copy > p:last-child { max-width: 270px; }
-  .dashboard-eyebrow { letter-spacing: 0.17em !important; }
+  .dashboard-eyebrow { font-size: 0.62rem !important; letter-spacing: 0.13em !important; }
   .dashboard-hero-actions { width: 100%; align-items: center; justify-content: flex-end; gap: 9px; }
   .dashboard-page button.dashboard-button.dashboard-hero-button { min-height: 48px; }
   .dashboard-form-panel { padding: 19px !important; }

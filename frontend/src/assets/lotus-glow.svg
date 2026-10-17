@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" fill="none">
+  <defs>
+    <linearGradient id="lotus-stroke" x1="48" y1="24" x2="239" y2="188" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F5FF" />
+      <stop offset=".52" stop-color="#C7DFFF" />
+      <stop offset="1" stop-color="#AFA0FF" />
+    </linearGradient>
+    <linearGradient id="lotus-stem" x1="150" y1="108" x2="150" y2="194" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DAE9FF" />
+      <stop offset="1" stop-color="#A5D9E8" stop-opacity=".2" />
+    </linearGradient>
+    <filter id="lotus-glow" x="-45%" y="-60%" width="190%" height="220%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="3.4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g stroke="url(#lotus-stroke)" stroke-linecap="round" stroke-linejoin="round">
+    <g opacity=".8" filter="url(#lotus-glow)" stroke-width="3.2">
+      <path d="M150 112C121 96 91 68 88 31c25 13 47 42 62 81Z" />
+      <path d="M150 112c-21-31-25-67 0-98 25 31 21 67 0 98Z" />
+      <path d="M150 112c15-39 37-68 62-81-3 37-33 65-62 81Z" />
+      <path d="M150 112C119 107 83 92 58 64c35 3 69 17 92 48Z" />
+      <path d="M150 112c31-5 67-20 92-48-35 3-69 17-92 48Z" />
+      <path d="M150 112c-29 3-54-4-73-22 28 1 53 8 73 22Z" />
+      <path d="M150 112c29 3 54-4 73-22-28 1-53 8-73 22Z" />
+    </g>
+
+    <g stroke-width="1.35" opacity=".94">
+      <path d="M150 112C121 96 91 68 88 31c25 13 47 42 62 81Z" />
+      <path d="M150 112c-21-31-25-67 0-98 25 31 21 67 0 98Z" />
+      <path d="M150 112c15-39 37-68 62-81-3 37-33 65-62 81Z" />
+      <path d="M150 112C119 107 83 92 58 64c35 3 69 17 92 48Z" />
+      <path d="M150 112c31-5 67-20 92-48-35 3-69 17-92 48Z" />
+      <path d="M150 112c-29 3-54-4-73-22 28 1 53 8 73 22Z" />
+      <path d="M150 112c29 3 54-4 73-22-28 1-53 8-73 22Z" />
+      <path d="M150 108c-7-28-8-55 0-82" opacity=".72" />
+      <path d="M145 105c-12-24-27-43-45-61" opacity=".58" />
+      <path d="M155 105c12-24 27-43 45-61" opacity=".58" />
+      <path d="M150 112c-3 27-2 53 1 81" stroke="url(#lotus-stem)" stroke-width="1.6" />
+      <path d="M151 173c-24-17-48-19-69-5 23 12 46 14 69 5Z" stroke="url(#lotus-stem)" />
+      <path d="M151 173c24-17 48-19 69-5-23 12-46 14-69 5Z" stroke="url(#lotus-stem)" />
+      <path d="M85 167c18 3 39 5 66 6M217 167c-18 3-39 5-66 6" opacity=".58" />
+    </g>
+
+    <g fill="#F7FBFF" stroke="none" filter="url(#lotus-glow)">
+      <circle cx="88" cy="31" r="1.8" />
+      <circle cx="150" cy="14" r="2" />
+      <circle cx="212" cy="31" r="1.8" />
+      <circle cx="58" cy="64" r="1.5" />
+      <circle cx="242" cy="64" r="1.5" />
+    </g>
+  </g>
+</svg>

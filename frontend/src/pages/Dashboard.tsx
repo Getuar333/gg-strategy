@@ -8,6 +8,7 @@ import { CreateTaskInput, Task, TaskPriority, TaskStatus, UpdateTaskInput } from
 import Button from '../components/Button';
 import GlassPanel from '../components/GlassPanel';
 import storyImage from "../assets/G.G Strategy-story.png";
+import lotusFlower from '../assets/lotus-glow.svg';
 
 interface TaskFormState extends CreateTaskInput {
   status: TaskStatus;
@@ -239,6 +240,9 @@ const Dashboard: React.FC = () => {
     <div className="dashboard-page relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-8">
       <div className="dashboard-content relative z-10 mx-auto max-w-7xl">
         <header className="dashboard-hero mb-3 flex flex-col gap-2 rounded-[2rem] border border-white/10 bg-black/20 px-3 py-3 backdrop-blur-2xl lg:flex-row lg:items-end lg:justify-between">
+          <div className="dashboard-hero-flower" aria-hidden="true">
+            <img src={lotusFlower} alt="" />
+          </div>
           <div className="dashboard-hero-copy">
             <p className="dashboard-eyebrow text-xs font-semibold uppercase tracking-[0.35em] text-cyan-300/70">Your strategy space</p>
           </div>
