@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaFacebookF, FaGithub, FaLinkedinIn } from 'react-icons/fa';
+import { FaFacebook, FaGithub, FaLinkedinIn } from 'react-icons/fa';
 import { FiArrowUpRight, FiCheck, FiCopy, FiGlobe, FiMail, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
 
 const personalInformation = {
@@ -9,17 +9,16 @@ const personalInformation = {
   email: 'getuat.gaming@gmail.com',
   location: 'Lipjan, Sllovi 14000.',
 };
-
-// Add the profile URLs here. The matching social buttons open these addresses directly.
 const socialUrls = {
-  linkedin: '', // Vendose URL-në e profilit LinkedIn këtu.
-  facebook: '', // Vendose URL-në e profilit Facebook këtu.
-  github: '', // Vendose URL-në e profilit GitHub këtu.
+  linkedin: 'https://www.linkedin.com/in/getuar-gashi-5490b4336/',
+  facebook: 'https://www.facebook.com/getuar.gashi.94801',
+  github: 'https://github.com/Getuar333',
 };
+
 
 const socialProfiles = [
   { key: 'linkedin', title: 'LinkedIn', hint: 'Professional network', url: socialUrls.linkedin, icon: FaLinkedinIn },
-  { key: 'facebook', title: 'Facebook', hint: 'Social profile', url: socialUrls.facebook, icon: FaFacebookF },
+  { key: 'facebook', title: 'Facebook', hint: 'Social profile', url: socialUrls.facebook, icon: FaFacebook },
   { key: 'github', title: 'GitHub', hint: 'Code and projects', url: socialUrls.github, icon: FaGithub },
   { key: 'email', title: 'Email', hint: 'Get in touch', url: `mailto:${personalInformation.email}`, icon: FiMail },
 ];
@@ -108,7 +107,6 @@ const InformationPage: React.FC = () => {
       <section className="information-section information-social-section" aria-labelledby="social-profiles-title">
         <div className="information-section-heading">
           <div>
-            <p className="feature-eyebrow"><FiGlobe /> Around the web</p>
             <h2 id="social-profiles-title">Social media</h2>
           </div>
           <p>Choose a platform to connect</p>
