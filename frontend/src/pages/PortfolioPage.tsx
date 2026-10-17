@@ -1,7 +1,8 @@
 import React from 'react';
 import { FiArrowUpRight, FiGithub, FiImage } from 'react-icons/fi';
 import GlassPanel from '../components/GlassPanel';
-
+import ubtFindPointImage from '../assets/ubt-findpoint.png';
+import freelancerMarketplaceImage from '../assets/freelancer-marketplace.png';
 /*
  * Add each screenshot to src/assets, then uncomment its import here.
  * Leave a project's `image` as undefined when it has no screenshot yet.
@@ -31,7 +32,7 @@ const projects: PortfolioProject[] = [
     technologies: ['React', 'Node.js', 'MySQL'],
     date: '2026',
     github: 'https://github.com/ertihoxha5/UBT-FindPoint',
-    image: undefined, // Set to ubtFindPointImage after adding its import above.
+    image: ubtFindPointImage,
   },
   {
     title: 'Freelancer-MarketPlace',
@@ -39,7 +40,7 @@ const projects: PortfolioProject[] = [
     technologies: ['React', 'Node.js', 'MySQL'],
     date: '2026',
     github: 'https://github.com/ertihoxha5/Freelancer-MarketPlace',
-    image: undefined, // Set to freelancerMarketplaceImage after adding its import above.
+    image: freelancerMarketplaceImage,
   },
   {
     title: 'JourneySync',
