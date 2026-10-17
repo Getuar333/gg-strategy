@@ -52,11 +52,11 @@ const Sidebar: React.FC = () => {
         <div className="sidebar-brand relative overflow-hidden px-5 py-7">
           <Link to="/dashboard" className="relative flex items-center gap-3" onClick={() => setIsOpen(false)}>
             <span className="sidebar-mark flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15">
-              <FiTarget className="h-5 w-5" />
+              <FiTarget className="hidden"/><span>🕋</span>
             </span>
             <span>
-              <span className="block text-sm font-semibold uppercase tracking-[0.24em] text-white">G.G Strategy</span>
-              <span className="mt-1 block text-xs text-slate-400">Your planning space</span>
+              <span className="block text-sm font-semibold uppercase tracking-[0.3em] text-white/40">G.G Strategy</span>
+              <span className="mt-1 block text-xs text-slate-400">Your menu is here</span>
             </span>
           </Link>
         </div>
