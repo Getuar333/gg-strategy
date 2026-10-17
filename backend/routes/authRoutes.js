@@ -9,6 +9,7 @@ router.post('/logout', AuthController.logout);
 router.post('/refresh', AuthController.refreshToken);
 
 router.get('/me', authMiddleware, AuthController.getCurrentUser);
+router.get('/information', authMiddleware, AuthController.getPersonalInformation);
 router.put('/profile', authMiddleware, AuthController.updateProfile);
 
 export default router;

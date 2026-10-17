@@ -1,51 +1,65 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import { FiCalendar, FiChevronLeft, FiChevronRight, FiClock } from 'react-icons/fi';
 import { taskService } from '../services/api';
 import { Task } from '../types';
-import GlassPanel from '../components/GlassPanel';
+import { getErrorMessage } from '../lib/axios';
 
-const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+type CalendarDay = { date: Date; inCurrentMonth: boolean };
+type CalendarView = 'month' | 'week';
+
+const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const formatLocalDate = (date: Date): string => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2,'0');
-  const day = String(date.getDate()).padStart(2,'0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
 
 const CalendarPage: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const [view, setView] = useState<'month' | 'week'>('month');
-  const [monthCursor, setMonthCursor] = useState(new Date());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [selectedDate, setSelectedDate] = useState(() => formatLocalDate(new Date()));
+  const [view, setView] = useState<CalendarView>('month');
+  const [monthCursor, setMonthCursor] = useState(() => {
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadTasks = async () => {
-      const data = await taskService.getTasks();
-      setTasks(data);
+      setLoading(true);
+      try {
+        const data = await taskService.getTasks();
+        if (!cancelled) {
+          setTasks(data);
+          setError('');
+        }
+      } catch (requestError) {
+        if (!cancelled) {
+          setError(getErrorMessage(requestError, 'Unable to load calendar activities.'));
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     };
 
     void loadTasks();
+    return () => { cancelled = true; };
   }, []);
 
-  useEffect(() => {
-    const today = new Date();
-    setSelectedDate(formatLocalDate(today));
-  }, []);
-
-  const calendarDays = useMemo(() => {
+  const calendarDays = useMemo<CalendarDay[]>(() => {
     const year = monthCursor.getFullYear();
     const month = monthCursor.getMonth();
-
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const totalDays = lastDay.getDate();
-    const leadingDays = firstDay.getDay();
-    const cells: Array<{ date: Date; inCurrentMonth: boolean }> = [];
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const cells: CalendarDay[] = [];
 
-    for (let i = 0; i < leadingDays; i += 1) {
-      const date = new Date(year, month, i - leadingDays + 1);
+    for (let offset = 0; offset < firstDay.getDay(); offset += 1) {
+      const date = new Date(year, month, offset - firstDay.getDay() + 1);
       cells.push({ date, inCurrentMonth: false });
     }
 
@@ -53,130 +67,181 @@ const CalendarPage: React.FC = () => {
       cells.push({ date: new Date(year, month, day), inCurrentMonth: true });
     }
 
-    while (cells.length % 7 !== 0) {
-      const last = cells[cells.length - 1]?.date ?? new Date();
-      cells.push({ date: new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1), inCurrentMonth: false });
+    while (cells.length < 42) {
+      const lastDate = cells[cells.length - 1]?.date ?? new Date(year, month, 1);
+      const date = new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate() + 1);
+      cells.push({ date, inCurrentMonth: date.getMonth() === month });
     }
 
     return cells;
   }, [monthCursor]);
 
-  const selectedDayTasks = useMemo(() => {
-    if (!selectedDate) {
-      return [];
+  const visibleDays = useMemo(() => {
+    if (view === 'month') return calendarDays;
+
+    const selected = new Date(`${selectedDate}T12:00:00`);
+    const weekStart = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate() - selected.getDay());
+    return Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + index);
+      return { date, inCurrentMonth: date.getMonth() === monthCursor.getMonth() };
+    });
+  }, [calendarDays, monthCursor, selectedDate, view]);
+
+  const selectedDayTasks = useMemo(
+    () => tasks.filter((task) => task.dueDate === selectedDate).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || '')),
+    [selectedDate, tasks],
+  );
+
+  const monthTaskCount = useMemo(() => {
+    const year = monthCursor.getFullYear();
+    const month = String(monthCursor.getMonth() + 1).padStart(2, '0');
+    const prefix = `${year}-${month}-`;
+    return tasks.filter((task) => task.dueDate.startsWith(prefix)).length;
+  }, [monthCursor, tasks]);
+
+  const selectedDateObject = new Date(`${selectedDate}T12:00:00`);
+  const selectedDateLabel = selectedDateObject.toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', year: 'numeric',
+  });
+  const today = formatLocalDate(new Date());
+
+  const moveMonth = (amount: number) => {
+    if (view === 'week') {
+      const nextDate = new Date(`${selectedDate}T12:00:00`);
+      nextDate.setDate(nextDate.getDate() + amount * 7);
+      setSelectedDate(formatLocalDate(nextDate));
+      setMonthCursor(new Date(nextDate.getFullYear(), nextDate.getMonth(), 1));
+      return;
     }
 
-    return tasks.filter((task) => task.dueDate === selectedDate);
-  }, [selectedDate, tasks]);
-
-  const goToPrevious = () => {
-    setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() - 1, 1));
+    const nextMonth = new Date(monthCursor.getFullYear(), monthCursor.getMonth() + amount, 1);
+    const selected = new Date(`${selectedDate}T12:00:00`);
+    setMonthCursor(nextMonth);
+    if (selected.getFullYear() !== nextMonth.getFullYear() || selected.getMonth() !== nextMonth.getMonth()) {
+      const lastDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0).getDate();
+      setSelectedDate(formatLocalDate(new Date(nextMonth.getFullYear(), nextMonth.getMonth(), Math.min(selected.getDate(), lastDay))));
+    }
   };
 
-  const goToNext = () => {
-    setMonthCursor(new Date(monthCursor.getFullYear(), monthCursor.getMonth() + 1, 1));
+  const selectDate = (date: Date) => {
+    setSelectedDate(formatLocalDate(date));
+    if (date.getFullYear() !== monthCursor.getFullYear() || date.getMonth() !== monthCursor.getMonth()) {
+      setMonthCursor(new Date(date.getFullYear(), date.getMonth(), 1));
+    }
   };
 
   const goToToday = () => {
-    const today = new Date();
-    setMonthCursor(new Date(today.getFullYear(), today.getMonth(), 1));
-    setSelectedDate(formatLocalDate(today));
+    const now = new Date();
+    setSelectedDate(formatLocalDate(now));
+    setMonthCursor(new Date(now.getFullYear(), now.getMonth(), 1));
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(255,88,59,0.2),_transparent_35%),linear-gradient(135deg,_#04060b_0%,_#090d16_100%)] px-4 py-6 sm:px-6 lg:px-8">
-      <header className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <div className="feature-page calendar-page px-4 py-7 sm:px-6 lg:px-8">
+      <header className="feature-heading mb-6">
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-cyan-300/70">Calendar</p>
-          <h1 className="mt-2 text-3xl font-semibold text-white">Your Plan week</h1>
+          <p className="feature-eyebrow"><FiCalendar /> Calendar</p>
+          <h1>Plan your time</h1>
+          <p className="feature-heading-copy">A clear view of the tasks scheduled in your workspace.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <button type="button" onClick={() => setView('month')} className={`rounded-full px-4 py-2 text-sm ${view === 'month' ? 'bg-cyan-500/20 text-cyan-200' : 'bg-white/10 text-slate-300'}`}>Month's</button>
-          <button type="button" onClick={() => setView('week')} className={`rounded-full px-4 py-2 text-sm ${view === 'week' ? 'bg-cyan-500/20 text-cyan-200' : 'bg-white/10 text-slate-300'}`}>Week's</button>
-          <button type="button" onClick={goToToday} className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-white">Today's</button>
+        <div className="calendar-toolbar" aria-label="Calendar view controls">
+          <div className="calendar-view-switch" role="group" aria-label="Calendar view">
+            <button type="button" onClick={() => setView('month')} className={view === 'month' ? 'is-selected' : ''}>Month</button>
+            <button type="button" onClick={() => setView('week')} className={view === 'week' ? 'is-selected' : ''}>Week</button>
+          </div>
+          <button type="button" onClick={goToToday} className="calendar-today-button">Today</button>
         </div>
       </header>
 
-      <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-        <GlassPanel className="overflow-hidden p-0">
-          <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-            <div className="flex items-center gap-3">
-              <div className="rounded-2xl bg-cyan-500/15 p-2 text-cyan-200"><FiCalendar /></div>
+      {error && <div className="calendar-error" role="alert">{error}</div>}
+
+      <div className="calendar-layout">
+        <section className="calendar-card" aria-label="Calendar dates">
+          <div className="calendar-card-header">
+            <div className="calendar-month-heading">
+              <span className="calendar-heading-icon"><FiCalendar /></span>
               <div>
-                <p className="text-sm font-semibold text-white">{monthCursor.toLocaleString('en', { month: 'long', year: 'numeric' })}</p>
-                <p className="text-xs text-slate-400">{view === 'month' ? 'Monthly overview' : 'Weekly overview'}</p>
+                <h2>{monthCursor.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h2>
+                <p>{error ? 'Activities unavailable' : `${monthTaskCount} ${monthTaskCount === 1 ? 'event' : 'events'} this month`}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button type="button" onClick={goToPrevious} className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-300"><FiChevronLeft /></button>
-              <button type="button" onClick={goToNext} className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-300"><FiChevronRight /></button>
+            <div className="calendar-month-actions">
+              <button type="button" onClick={() => moveMonth(-1)} aria-label={view === 'week' ? 'Previous week' : 'Previous month'}><FiChevronLeft /></button>
+              <button type="button" onClick={() => moveMonth(1)} aria-label={view === 'week' ? 'Next week' : 'Next month'}><FiChevronRight /></button>
             </div>
           </div>
 
-          <div className="grid grid-cols-7 border-b border-white/10 bg-black/20 text-center text-xs uppercase tracking-[0.3em] text-slate-500">
-            {weekdayLabels.map((label) => (
-              <div key={label} className="py-3">{label}</div>
-            ))}
+          <div className="calendar-weekdays" aria-hidden="true">
+            {weekdays.map((day) => <span key={day}>{day}</span>)}
           </div>
 
-          <div className="grid grid-cols-7">
-            {calendarDays.map((cell, index) => {
+          <div className={`calendar-days ${view === 'week' ? 'calendar-days--week' : ''}`}>
+            {visibleDays.map((cell) => {
               const isoDate = formatLocalDate(cell.date);
-              const hasTasks = tasks.some((task) => task.dueDate === isoDate);
-              const isToday = isoDate === formatLocalDate(new Date());
+              const isToday = isoDate === today;
               const isSelected = isoDate === selectedDate;
+              const taskCount = tasks.filter((task) => task.dueDate === isoDate).length;
 
               return (
-                <motion.button
-                  key={`${isoDate}-${index}`}
-                  whileHover={{ scale: 1.02 }}
+                <button
+                  key={isoDate}
                   type="button"
-                  onClick={() => setSelectedDate(isoDate)}
-                  className={`min-h-[96px] border-b border-r border-white/10 p-3 text-left transition ${cell.inCurrentMonth ? 'bg-transparent text-white' : 'bg-white/5 text-slate-500'} ${isSelected ? 'bg-cyan-500/15 ring-1 ring-cyan-400/30' : ''}`}
+                  onClick={() => selectDate(cell.date)}
+                  aria-label={`${cell.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}${taskCount ? `, ${taskCount} ${taskCount === 1 ? 'event' : 'events'}` : ''}`}
+                  aria-pressed={isSelected}
+                  className={`calendar-day ${cell.inCurrentMonth ? '' : 'is-outside'} ${isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className={`text-sm font-semibold ${isToday ? 'rounded-full bg-cyan-500/20 px-2 py-1 text-cyan-200' : ''}`}>{cell.date.getDate()}</span>
-                    {hasTasks && <span className="h-2.5 w-2.5 rounded-full bg-orange-400" />}
-                  </div>
-                  <div className="mt-3 space-y-1">
-                    {tasks.filter((task) => task.dueDate === isoDate).slice(0, 2).map((task) => (
-                      <div key={task.id} className="truncate rounded-full bg-white/10 px-2 py-1 text-[10px] text-slate-300">
-                        {task.title}
-                      </div>
-                    ))}
-                  </div>
-                </motion.button>
+                  <span className="calendar-day-number">{cell.date.getDate()}</span>
+                  {taskCount > 0 && <span className="calendar-day-dots" aria-hidden="true">{Array.from({ length: Math.min(taskCount, 3) }, (_, index) => <i key={index} />)}</span>}
+                </button>
               );
             })}
           </div>
-        </GlassPanel>
+          {loading && <p className="calendar-loading" role="status">Loading activities…</p>}
+        </section>
 
-        <GlassPanel>
-          <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-            <div className="rounded-2xl bg-orange-500/15 p-2 text-orange-300"><FiClock /></div>
+        <section className="calendar-events" aria-labelledby="calendar-events-title">
+          <div className="calendar-events-header">
+            <span className="calendar-events-icon"><FiClock /></span>
             <div>
-              <p className="text-sm font-semibold text-white">{selectedDate || 'Select a day'}</p>
-              <p className="text-xs text-slate-400">Scheduled tasks</p>
+              <p className="calendar-events-kicker">{selectedDate === today ? 'Scheduled activities' : 'Activities for selected date'}</p>
+              <h2 id="calendar-events-title">{selectedDate === today ? "Today's Events" : selectedDateLabel}</h2>
+              {selectedDate === today && <p className="calendar-events-date">{selectedDateLabel}</p>}
             </div>
           </div>
 
-          <div className="mt-4 space-y-3">
-            {selectedDayTasks.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/10 bg-white/5 p-4 text-sm text-slate-400">No tasks per today.</div>
-            ) : (
-              selectedDayTasks.map((task) => (
-                <div key={task.id} className="rounded-2xl border border-white/10 bg-black/30 p-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-medium text-white">{task.title}</p>
-                    <span className="rounded-full bg-cyan-500/15 px-2.5 py-1 text-[10px] uppercase tracking-[0.25em] text-cyan-200">{task.priority}</span>
-                  </div>
-                  <p className="mt-2 text-sm text-slate-400">{task.description || 'No description provided.'}</p>
-                  <p className="mt-3 text-xs text-slate-500">{task.startTime || '--:--'} - {task.endTime || '--:--'}</p>
-                </div>
-              ))
-            )}
-          </div>
-        </GlassPanel>
+          {loading ? (
+            <div className="calendar-empty" role="status">Loading this day’s activities…</div>
+          ) : error ? (
+            <div className="calendar-empty">Activities could not be loaded right now.</div>
+          ) : selectedDayTasks.length === 0 ? (
+            <div className="calendar-empty">
+              <span className="calendar-empty-mark"><FiCalendar /></span>
+              <strong>No activities on this date</strong>
+              <span>Your scheduled tasks will appear here.</span>
+            </div>
+          ) : (
+            <div className="calendar-event-list">
+              {selectedDayTasks.map((task) => {
+                const accent = task.priority === 'high' ? 'violet' : task.priority === 'low' ? 'green' : 'blue';
+                const taskTime = task.startTime
+                  ? `${task.startTime}${task.endTime ? ` – ${task.endTime}` : ''}`
+                  : 'Any time';
+                return (
+                  <article className={`calendar-event calendar-event--${accent}`} key={task.id}>
+                    <span className="calendar-event-rule" aria-hidden="true" />
+                    <div className="calendar-event-copy">
+                      <h3>{task.title}</h3>
+                      <p>{task.description || 'No description provided.'}</p>
+                      <span className="calendar-event-category">{task.category || 'General'} · {task.priority}</span>
+                    </div>
+                    <time className="calendar-event-time">{taskTime}</time>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );

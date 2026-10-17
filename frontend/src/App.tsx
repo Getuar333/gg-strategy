@@ -11,6 +11,9 @@ import Home from './pages/Home';
 import CalendarPage from './pages/CalendarPage';
 import PortfolioPage from './pages/PortfolioPage';
 import Settings from './pages/Settings';
+import InformationPage from './pages/InformationPage';
+import ClockStudioPage from './pages/ClockStudioPage';
+import AIAssistantPage from './pages/AIAssistantPage';
 
 const App: React.FC = () => {
   return (
@@ -81,6 +84,36 @@ const App: React.FC = () => {
               <ProtectedRoute>
                 <Layout>
                   <Settings />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/information"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <InformationPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clock-studio"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ClockStudioPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ai-assistant"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AIAssistantPage />
                 </Layout>
               </ProtectedRoute>
             }

@@ -176,6 +176,29 @@ export class AuthController {
     }
   }
 
+  static async getPersonalInformation(req, res) {
+    try {
+      const user = await User.findById(req.user.userId);
+
+      if (!user || user.email.toLowerCase() !== 'getuat.gaming@gmail.com') {
+        return res.status(403).json({ message: 'This information is only available to its owner.' });
+      }
+
+      return res.status(200).json({
+        information: {
+          firstName: 'Getuar',
+          lastName: 'Gashi',
+          phone: '+383 45 367137',
+          email: 'getuat.gaming@gmail.com',
+          location: 'Lipjan, Sllovi 14000',
+        },
+      });
+    } catch (error) {
+      console.error('GET PERSONAL INFORMATION ERROR:', error);
+      return res.status(500).json({ message: 'Failed to fetch personal information' });
+    }
+  }
+
   static async updateProfile(req, res) {
     try {
       const userId = req.user.userId;

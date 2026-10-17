@@ -33,6 +33,14 @@ type ApiAuthResponse = {
   user: ApiUser;
 };
 
+export type PersonalInformation = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  location: string;
+};
+
 type ApiTask = {
   id: number;
   user_id?: number;
@@ -219,6 +227,11 @@ export const authService = {
   async getProfile(): Promise<User> {
     const response = await axiosInstance.get<{ user: ApiUser }>('/auth/me');
     return normalizeUser(response.data.user);
+  },
+
+  async getPersonalInformation(): Promise<PersonalInformation> {
+    const response = await axiosInstance.get<{ information: PersonalInformation }>('/auth/information');
+    return response.data.information;
   },
 
   async updateProfile(fullName: string, email: string): Promise<User> {

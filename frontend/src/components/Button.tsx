@@ -17,10 +17,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       lg: 'px-6 py-3 text-lg',
     };
     const variantStyles = {
-      primary: `bg-gradient-to-br from-red-600 to-black
-                hover:from-red-700 hover:to-slate-900
-                text-white font-semibold shadow-xl shadow-red-950/50 hover:shadow-red-900/60
-                active:from-red-800 active:to-black
+      primary: `bg-gradient-to-br from-violet-600 via-[#7044e8] to-blue-600
+                hover:from-violet-500 hover:to-blue-500
+                text-white font-semibold shadow-xl shadow-violet-950/40 hover:shadow-blue-900/40
+                active:from-violet-700 active:to-blue-700
                 transition-all duration-200`,
       
       secondary: `bg-white/10 hover:bg-white/15 border border-white/20
@@ -34,8 +34,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               active:from-rose-800 active:to-black
               transition-all duration-200`,
       
-      outline: `border-2 border-red-500/70 text-red-100 hover:bg-red-500/10 hover:border-red-400
-               active:bg-red-500/20
+      outline: `border-2 border-violet-400/60 text-violet-100 hover:bg-violet-500/10 hover:border-violet-300
+               active:bg-violet-500/20
                font-semibold transition-all duration-200`,
     };
     return (
@@ -48,7 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           rounded-lg font-medium min-h-10
           disabled:opacity-50 disabled:cursor-not-allowed
           flex items-center justify-center gap-2
-          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black
           ${className}
         `}
         {...props}
