@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaFacebook, FaGithub, FaLinkedinIn } from 'react-icons/fa';
-import { FiArrowUpRight, FiCheck, FiCopy, FiMail, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
+import { FiArrowUpRight, FiCopy, FiDownload, FiMail, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
 
 const personalInformation = {
   firstName: 'Getuar',
@@ -15,6 +15,11 @@ const socialUrls = {
   github: 'https://github.com/Getuar333',
 };
 
+// Add your profile photo as frontend/public/profile.jpg.
+const profilePhotoUrl = '/profile.jpg';
+// Add your CV as frontend/public/Getuar-Gashi-CV.pdf.
+const cvDocumentUrl = '/Getuar-Gashi-CV.pdf';
+
 
 const socialProfiles = [
   { key: 'linkedin', title: 'LinkedIn', hint: 'Professional network', url: socialUrls.linkedin, icon: FaLinkedinIn },
@@ -25,6 +30,7 @@ const socialProfiles = [
 
 const InformationPage: React.FC = () => {
   const [notice, setNotice] = useState('');
+  const [profilePhotoUnavailable, setProfilePhotoUnavailable] = useState(false);
   const fullName = `${personalInformation.firstName} ${personalInformation.lastName}`;
 
   const copyValue = async (value: string, label: string) => {
@@ -52,19 +58,29 @@ const InformationPage: React.FC = () => {
     <div className="feature-page information-page px-4 py-7 sm:px-6 lg:px-8">
       <header className="feature-heading mb-7">
         <div>
-          <p className="feature-eyebrow"><FiUser /> Information</p>
+          <p className="feature-eyebrow"><FiUser />My Information</p>
         </div>
       </header>
 
       <section className="information-profile-card" aria-label="Personal profile">
         <div className="information-profile-glow" aria-hidden="true" />
-        <div className="information-avatar" aria-hidden="true">GG</div>
+        <div className="information-avatar">
+          {profilePhotoUrl && !profilePhotoUnavailable ? (
+            <img src={profilePhotoUrl} alt={`${fullName} profile`} onError={() => setProfilePhotoUnavailable(true)} />
+          ) : (
+            <span aria-hidden="true">GG</span>
+          )}
+        </div>
         <div className="information-profile-copy">
           <p className="information-overline">Profile</p>
           <h2>{fullName}</h2>
           <p>Based in {personalInformation.location}</p>
         </div>
-        <span className="information-profile-badge"><FiCheck /> Contact</span>
+        <a className="information-profile-cv" href={cvDocumentUrl} download="Getuar-Gashi-CV.pdf" title="Shkarko CV-në">
+          <span className="information-profile-cv-mark">CV</span>
+          <span>Shkarko CV</span>
+          <FiDownload aria-hidden="true" />
+        </a>
       </section>
 
       <section className="information-section" aria-labelledby="personal-details-title">

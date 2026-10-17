@@ -762,6 +762,7 @@ textarea {
 }
 
 .information-avatar {
+  position: relative;
   z-index: 1;
   display: grid;
   width: 65px;
@@ -776,6 +777,15 @@ textarea {
   font-size: 1.2rem;
   font-weight: 750;
   letter-spacing: 0.02em;
+  overflow: hidden;
+}
+
+.information-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .information-profile-copy {
@@ -805,20 +815,55 @@ textarea {
   font-size: 0.82rem;
 }
 
-.information-profile-badge {
+.information-profile-cv {
+  position: relative;
   z-index: 1;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 9px;
   margin-left: auto;
-  padding: 7px 10px;
-  border: 1px solid rgba(114, 224, 183, 0.17);
-  border-radius: 999px;
-  background: rgba(31, 167, 114, 0.09);
-  color: #a0e6c9;
-  font-size: 0.7rem;
-  font-weight: 650;
+  padding: 10px 14px;
+  border: 1px solid rgba(183, 164, 255, 0.28);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(119, 86, 221, 0.2), rgba(50, 91, 177, 0.16));
+  box-shadow: 0 9px 24px rgba(18, 15, 44, 0.2), inset 0 1px rgba(255, 255, 255, 0.07);
+  color: #eeeaff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
   white-space: nowrap;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.information-profile-cv:hover {
+  transform: translateY(-2px);
+  border-color: rgba(194, 177, 255, 0.55);
+  background: linear-gradient(135deg, rgba(134, 98, 237, 0.32), rgba(58, 111, 211, 0.25));
+  box-shadow: 0 14px 30px rgba(22, 18, 57, 0.32), 0 0 24px rgba(139, 110, 239, 0.13);
+}
+
+.information-profile-cv:focus-visible {
+  outline: 2px solid #c3b2ff;
+  outline-offset: 3px;
+}
+
+.information-profile-cv-mark {
+  display: grid;
+  min-width: 37px;
+  height: 31px;
+  place-items: center;
+  border: 1px solid rgba(207, 195, 255, 0.21);
+  border-radius: 9px;
+  background: rgba(9, 11, 27, 0.35);
+  color: #d8ccff;
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+}
+
+.information-profile-cv > svg {
+  width: 16px;
+  height: 16px;
+  color: #c4b4ff;
 }
 
 .information-section {
@@ -2067,7 +2112,7 @@ textarea {
   .information-profile-card { align-items: flex-start; flex-wrap: wrap; padding: 20px; }
   .information-avatar { width: 54px; height: 54px; border-radius: 18px; }
   .information-profile-copy { flex: 1; }
-  .information-profile-badge { margin-left: 68px; }
+  .information-profile-cv { margin-left: 82px; }
   .information-details-grid,
   .social-profile-grid { grid-template-columns: minmax(0, 1fr); }
   .information-detail-card--wide { grid-column: auto; }
@@ -2099,7 +2144,7 @@ textarea {
   .calendar-events-header h2 { font-size: 0.85rem; }
   .calendar-event { gap: 7px; padding-right: 8px; }
   .calendar-event-time { font-size: 0.63rem; }
-  .information-profile-badge { margin-left: 0; }
+  .information-profile-cv { margin-left: 0; }
   .information-profile-card { gap: 12px; }
   .information-profile-copy h2 { font-size: 1.15rem; }
   .information-detail-card { padding: 13px; }
@@ -2448,5 +2493,92 @@ textarea {
   .dashboard-momentum-card { min-height: 210px; padding: 17px; }
   .dashboard-quick-stats { grid-template-columns: minmax(0, 1fr); }
   .dashboard-quick-stat { min-height: 128px; }
+}
+
+/* Dedicated, readable exam planning space in Notes */
+.exam-plan-panel {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid rgba(178, 159, 255, 0.24);
+  border-radius: 26px;
+  background:
+    radial-gradient(ellipse at 4% 0%, rgba(128, 92, 229, 0.19), transparent 42%),
+    radial-gradient(ellipse at 100% 100%, rgba(57, 111, 210, 0.13), transparent 45%),
+    linear-gradient(145deg, rgba(25, 25, 49, 0.96), rgba(12, 17, 34, 0.97));
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.29), inset 0 1px rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(22px);
+}
+
+.exam-plan-heading {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 21px;
+  border-bottom: 1px solid rgba(191, 184, 224, 0.13);
+}
+
+.exam-plan-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(194, 174, 255, 0.23);
+  border-radius: 16px;
+  background: rgba(129, 101, 223, 0.18);
+  color: #d0c2ff;
+  font-size: 1.2rem;
+}
+
+.exam-plan-heading > div { flex: 1; min-width: 0; }
+.exam-plan-heading > div > p { margin: 0 0 4px; color: #b9a7fb; font-size: 0.65rem; font-weight: 750; letter-spacing: 0.15em; text-transform: uppercase; }
+.exam-plan-heading h2 { margin: 0; color: #f5f2ff; font-size: clamp(1.2rem, 2vw, 1.55rem); font-weight: 720; letter-spacing: -0.035em; }
+.exam-plan-heading > div > span { display: block; margin-top: 6px; color: #a5a9c0; font-size: 0.82rem; line-height: 1.6; }
+.exam-plan-heading > button { flex: 0 0 auto; }
+.exam-plan-form { display: grid; gap: 18px; margin-top: 22px; }
+.exam-plan-field { display: grid; gap: 10px; color: #dedaf3; font-size: 0.84rem; font-weight: 650; }
+.exam-plan-field textarea {
+  width: 100%;
+  min-height: 340px;
+  padding: 18px 19px;
+  resize: vertical;
+  border: 1px solid rgba(174, 165, 213, 0.2);
+  border-radius: 17px;
+  outline: none;
+  background: rgba(5, 9, 22, 0.58);
+  color: #f4f2ff;
+  font-size: 0.98rem;
+  font-weight: 450;
+  line-height: 1.8;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.exam-plan-field textarea::placeholder { color: #737b96; opacity: 1; }
+.exam-plan-field textarea:focus { border-color: rgba(178, 154, 255, 0.65); background: rgba(5, 9, 22, 0.76); box-shadow: 0 0 0 4px rgba(129, 101, 223, 0.14); }
+.exam-plan-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.exam-plan-display {
+  min-height: 270px;
+  margin-top: 22px;
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid rgba(174, 165, 213, 0.15);
+  border-radius: 19px;
+  background: linear-gradient(145deg, rgba(7, 11, 25, 0.7), rgba(13, 19, 37, 0.68));
+}
+.exam-plan-display p { margin: 0; color: #e1e2f1; font-size: clamp(1rem, 1.45vw, 1.15rem); line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .exam-plan-heading { align-items: flex-start; flex-wrap: wrap; }
+  .exam-plan-heading > button { margin-left: 63px; }
+  .exam-plan-field textarea { min-height: 290px; padding: 15px; font-size: 0.92rem; }
+  .exam-plan-display { min-height: 220px; }
+}
+
+@media (max-width: 480px) {
+  .exam-plan-panel { padding: 18px; border-radius: 21px; }
+  .exam-plan-icon { width: 42px; height: 42px; border-radius: 14px; }
+  .exam-plan-heading { gap: 11px; }
+  .exam-plan-heading > button { margin-left: 53px; }
+  .exam-plan-actions > button { flex: 1; }
 }
 

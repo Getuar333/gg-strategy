@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiBookOpen, FiEdit2, FiFileText, FiLink, FiPaperclip, FiPlus, FiSearch, FiTrash2, FiX } from 'react-icons/fi';
+import { FiBookOpen, FiCalendar, FiEdit2, FiFileText, FiLink, FiPaperclip, FiPlus, FiSearch, FiTrash2, FiX } from 'react-icons/fi';
 import { getErrorMessage } from '../lib/axios';
 import { noteService } from '../services/api';
 import { CreateNoteInput, Note, NoteType } from '../types';
@@ -31,17 +31,24 @@ const emptyNote: NoteFormState = {
 const noteTypes: NoteType[] = ['note', 'bookmark', 'idea', 'reminder'];
 const attachmentOptions = ['text', 'link', 'pdf', 'word', 'excel', 'image'];
 const colorChoices = ['#ff7a1a', '#22d3ee', '#ec4899', '#d946ef', '#7e22ce'];
+const examPlanTitle = 'Provimet dhe Plani';
+const examPlanTag = 'provimet-dhe-plani';
+
+const isExamPlanNote = (note: Note): boolean => note.tags?.includes(examPlanTag) ?? false;
 
 const Home: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingExamPlan, setSavingExamPlan] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState<number | null>(null);
   const [tagsText, setTagsText] = useState('');
   const [formData, setFormData] = useState<NoteFormState>(emptyNote);
+  const [examPlanContent, setExamPlanContent] = useState('');
+  const [editingExamPlan, setEditingExamPlan] = useState(true);
 
   const fetchNotes = async (): Promise<void> => {
     try {
@@ -49,6 +56,11 @@ const Home: React.FC = () => {
       setError('');
       const data = await noteService.getNotes();
       setNotes(data);
+      const savedExamPlan = data.find(isExamPlanNote);
+      if (savedExamPlan) {
+        setExamPlanContent(savedExamPlan.content);
+        setEditingExamPlan(false);
+      }
     } catch (err) {
       setError(getErrorMessage(err, 'Failed to load notes.'));
     } finally {
@@ -62,9 +74,10 @@ const Home: React.FC = () => {
 
   const filteredNotes = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
-    if (!term) return notes;
+    const standardNotes = notes.filter((note) => !isExamPlanNote(note));
+    if (!term) return standardNotes;
 
-    return notes.filter((note) => {
+    return standardNotes.filter((note) => {
       return (
         note.title.toLowerCase().includes(term) ||
         note.content.toLowerCase().includes(term) ||
@@ -72,6 +85,8 @@ const Home: React.FC = () => {
       );
     });
   }, [notes, searchTerm]);
+
+  const examPlanNote = notes.find(isExamPlanNote);
 
   const handleFormChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): void => {
     const { name, value } = event.target;
@@ -140,6 +155,40 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleSaveExamPlan = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+
+    if (!examPlanContent.trim()) {
+      setError('Shkruaj planin e provimeve para se ta ruash.');
+      return;
+    }
+
+    try {
+      setSavingExamPlan(true);
+      setError('');
+      const payload: CreateNoteInput = {
+        title: examPlanTitle,
+        content: examPlanContent.trim(),
+        type: 'note',
+        tags: [examPlanTag],
+        color: '#8b5cf6',
+      };
+      const savedNote = examPlanNote
+        ? await noteService.updateNote(examPlanNote.id, payload)
+        : await noteService.createNote(payload);
+
+      setNotes((previous) => examPlanNote
+        ? previous.map((note) => note.id === savedNote.id ? savedNote : note)
+        : [savedNote, ...previous]);
+      setExamPlanContent(savedNote.content);
+      setEditingExamPlan(false);
+    } catch (err) {
+      setError(getErrorMessage(err, 'Nuk u ruajt plani i provimeve.'));
+    } finally {
+      setSavingExamPlan(false);
+    }
+  };
+
   const handleDeleteNote = async (id: number): Promise<void> => {
     const confirmed = window.confirm('Delete this note?');
     if (!confirmed) return;
@@ -166,6 +215,60 @@ const Home: React.FC = () => {
             {showForm ? 'Close' : 'New note'}
           </Button>
         </header>
+
+        {error && <div className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-100">{error}</div>}
+
+        <section className="exam-plan-panel" aria-labelledby="exam-plan-title">
+          <div className="exam-plan-heading">
+            <span className="exam-plan-icon"><FiCalendar aria-hidden="true" /></span>
+            <div>
+              <p>Planifikimi im</p>
+              <h2 id="exam-plan-title">Provimet dhe Plani</h2>
+              <span>Shëno provimet që të kanë mbetur, datat dhe planin e përgatitjes.</span>
+            </div>
+            {!editingExamPlan && (
+              <Button type="button" variant="secondary" onClick={() => setEditingExamPlan(true)}>
+                <FiEdit2 /> Ndrysho planin
+              </Button>
+            )}
+          </div>
+
+          {editingExamPlan ? (
+            <form className="exam-plan-form" onSubmit={handleSaveExamPlan}>
+              <label className="exam-plan-field" htmlFor="exam-plan-content">
+                <span>Plani yt i provimeve</span>
+                <textarea
+                  id="exam-plan-content"
+                  value={examPlanContent}
+                  onChange={(event) => setExamPlanContent(event.target.value)}
+                  placeholder={'Lënda / provimi:\nData e provimit:\nTemat që duhet të mësoj:\nPlani i përgatitjes:\n\nShto këtu sa më shumë hollësi që të duhen.'}
+                  rows={12}
+                />
+              </label>
+              <div className="exam-plan-actions">
+                {examPlanNote && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => {
+                      setExamPlanContent(examPlanNote.content);
+                      setEditingExamPlan(false);
+                    }}
+                  >
+                    Anulo
+                  </Button>
+                )}
+                <Button type="submit" loading={savingExamPlan} disabled={loading}>
+                  {examPlanNote ? 'Save changes' : 'Ruaj planin'}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <div className="exam-plan-display">
+              <p>{examPlanContent}</p>
+            </div>
+          )}
+        </section>
 
         <GlassPanel className="mb-6 p-4">
           <label className="relative block">
@@ -231,12 +334,12 @@ const Home: React.FC = () => {
           </GlassPanel>
         )}
 
-        {error && <div className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-500/10 p-4 text-sm text-rose-100">{error}</div>}
-
         {loading ? (
           <GlassPanel className="py-16 text-center text-slate-400">Loading notes...</GlassPanel>
         ) : filteredNotes.length === 0 ? (
-          <GlassPanel className="py-16 text-center text-slate-400">No notes yet. Create your first note.</GlassPanel>
+          <GlassPanel className="py-16 text-center text-slate-400">
+            {searchTerm ? 'No notes match your search.' : examPlanNote ? 'No other notes yet. Create a note when you need one.' : 'No notes yet. Create your first note.'}
+          </GlassPanel>
         ) : (
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {filteredNotes.map((note, index) => (
