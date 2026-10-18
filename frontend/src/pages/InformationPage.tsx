@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { FaFacebook, FaGithub, FaLinkedinIn } from 'react-icons/fa';
-import { FiArrowUpRight, FiCopy, FiDownload, FiMail, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
+import { FiArrowUpRight, FiAward, FiChevronDown, FiCopy, FiDownload, FiMail, FiMapPin, FiPhone, FiUser } from 'react-icons/fi';
 import profilePhoto from '../assets/profile-photo.JPG?url';
 import cvDocument from '../assets/CV.pdf?url';
+import ubtCertificate from '../assets/GLOBAL UBT FEST 2025.pdf?url';
+import mindlusterCertificate from '../assets/Mindluster_Certificate.pdf?url';
 
 const personalInformation = {
   firstName: 'Getuar',
@@ -72,6 +74,23 @@ const InformationPage: React.FC = () => {
           <h2>{fullName}</h2>
           <p>Based in {personalInformation.location}</p>
         </div>
+        <details className="information-certificates">
+          <summary className="information-profile-cv" title="Shkarko certifikatat">
+            <FiAward aria-hidden="true" />
+            <span>Certifikatat</span>
+            <FiChevronDown className="information-certificates-chevron" aria-hidden="true" />
+          </summary>
+          <div className="information-certificates-menu">
+            <a href={ubtCertificate} download="GLOBAL UBT FEST 2025.pdf">
+              <span>GLOBAL UBT FEST 2025</span>
+              <FiDownload aria-hidden="true" />
+            </a>
+            <a href={mindlusterCertificate} download="Mindluster_Certificate.pdf">
+              <span>Mindluster Certificate</span>
+              <FiDownload aria-hidden="true" />
+            </a>
+          </div>
+        </details>
         <a className="information-profile-cv" href={cvDocument} download="CV.pdf" title="Shkarko CV-në">
           <span className="information-profile-cv-mark">CV</span>
           <span>Shkarko CV</span>

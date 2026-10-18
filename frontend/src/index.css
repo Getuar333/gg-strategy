@@ -740,7 +740,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 17px;
-  overflow: hidden;
+  overflow: visible;
   min-height: 148px;
   padding: 25px 28px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -751,13 +751,14 @@ textarea {
 
 .information-profile-glow {
   position: absolute;
-  top: -118px;
+  top: 0;
   right: 4%;
   width: 240px;
-  height: 210px;
+  height: 100%;
   border-radius: 50%;
   background: rgba(107, 74, 228, 0.2);
   filter: blur(65px);
+  clip-path: ellipse(50% 50% at 50% 50%);
   pointer-events: none;
 }
 
@@ -833,6 +834,74 @@ textarea {
   text-decoration: none;
   white-space: nowrap;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.information-certificates {
+  position: relative;
+  z-index: 3;
+  margin-left: auto;
+}
+
+.information-certificates > summary {
+  margin-left: 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.information-certificates + .information-profile-cv {
+  margin-left: 0;
+}
+
+.information-certificates > summary::-webkit-details-marker {
+  display: none;
+}
+
+.information-certificates-chevron {
+  transition: transform 180ms ease;
+}
+
+.information-certificates[open] .information-certificates-chevron {
+  transform: rotate(180deg);
+}
+
+.information-certificates-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 5;
+  display: grid;
+  width: max-content;
+  min-width: 230px;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(183, 164, 255, 0.24);
+  border-radius: 13px;
+  background: #151a30;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.38);
+}
+
+.information-certificates-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 11px;
+  border-radius: 8px;
+  color: #eeeaff;
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.information-certificates-menu a:hover,
+.information-certificates-menu a:focus-visible {
+  outline: none;
+  background: rgba(139, 110, 239, 0.18);
+}
+
+.information-certificates-menu svg {
+  flex: 0 0 auto;
+  color: #c4b4ff;
 }
 
 .information-profile-cv:hover {
@@ -2112,7 +2181,8 @@ textarea {
   .information-profile-card { align-items: flex-start; flex-wrap: wrap; padding: 20px; }
   .information-avatar { width: 72px; height: 108px; border-radius: 18px; }
   .information-profile-copy { flex: 1; }
-  .information-profile-cv { margin-left: 82px; }
+  .information-certificates { margin-left: 82px; }
+  .information-profile-cv { margin-left: 0; }
   .information-details-grid,
   .social-profile-grid { grid-template-columns: minmax(0, 1fr); }
   .information-detail-card--wide { grid-column: auto; }
@@ -2144,7 +2214,7 @@ textarea {
   .calendar-events-header h2 { font-size: 0.85rem; }
   .calendar-event { gap: 7px; padding-right: 8px; }
   .calendar-event-time { font-size: 0.63rem; }
-  .information-profile-cv { margin-left: 0; }
+  .information-certificates { margin-left: 0; }
   .information-profile-card { gap: 12px; }
   .information-profile-copy h2 { font-size: 1.15rem; }
   .information-detail-card { padding: 13px; }
