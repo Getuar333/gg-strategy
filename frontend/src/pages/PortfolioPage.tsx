@@ -86,37 +86,52 @@ const projects: PortfolioProject[] = [
   },
 ];
 
+const projectSections = Array.from({ length: Math.ceil(projects.length / 2) }, (_, index) =>
+  projects.slice(index * 2, index * 2 + 2),
+);
+
 const PortfolioPage: React.FC = () => (
   <div className="portfolio-page feature-page px-4 py-7 sm:px-6 lg:px-8">
-    <header className="feature-heading portfolio-heading mb-6">
-      <div>
-        <p className="feature-eyebrow"><FiGithub /> Selected work</p>
-        <h1>Portfolio</h1>
-        <p className="feature-heading-copy">A collection of projects, tools, and ideas brought to life.</p>
-      </div>
-    </header>
+    {projectSections.map((sectionProjects, index) => (
+      <section
+        key={sectionProjects[0].title}
+        id={index === 0 ? 'portfolio-start' : undefined}
+        className="page-snap-section portfolio-snap-section"
+        aria-label={`Portfolio projects ${index * 2 + 1} to ${index * 2 + sectionProjects.length}`}
+      >
+        {index === 0 && (
+          <header className="feature-heading portfolio-heading mb-6">
+            <div>
+              <p className="feature-eyebrow"><FiGithub /> Selected work</p>
+              <h1>Portfolio</h1>
+              <p className="feature-heading-copy">A collection of projects, tools, and ideas brought to life.</p>
+            </div>
+          </header>
+        )}
 
-    <div className="portfolio-grid">
-      {projects.map((project) => (
-        <GlassPanel key={project.title} className="portfolio-project-card">
-          <div className={`portfolio-project-visual${project.image ? ' has-image' : ''}`}>
-            {project.image ? (
-              <img src={project.image} alt={`${project.title} project preview`} />
-            ) : (
-              <div className="portfolio-project-placeholder"><FiImage /><span>Image not added</span></div>
-            )}
-          </div>
-          <div className="portfolio-project-copy">
-            <div className="portfolio-project-title-row"><h2>{project.title}</h2><span>{project.date}</span></div>
-            <p className="portfolio-project-description">{project.description}</p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {project.technologies.map((tech) => <span key={tech} className="portfolio-tech-chip">{tech}</span>)}
-          </div>
-          <a href={project.github} target="_blank" rel="noreferrer" className="portfolio-repository-link"><FiGithub /> View repository <FiArrowUpRight /></a>
-        </GlassPanel>
-      ))}
-    </div>
+        <div className="portfolio-grid">
+          {sectionProjects.map((project) => (
+            <GlassPanel key={project.title} className="portfolio-project-card">
+              <div className={`portfolio-project-visual${project.image ? ' has-image' : ''}`}>
+                {project.image ? (
+                  <img src={project.image} alt={`${project.title} project preview`} />
+                ) : (
+                  <div className="portfolio-project-placeholder"><FiImage /><span>Image not added</span></div>
+                )}
+              </div>
+              <div className="portfolio-project-copy">
+                <div className="portfolio-project-title-row"><h2>{project.title}</h2><span>{project.date}</span></div>
+                <p className="portfolio-project-description">{project.description}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {project.technologies.map((tech) => <span key={tech} className="portfolio-tech-chip">{tech}</span>)}
+              </div>
+              <a href={project.github} target="_blank" rel="noreferrer" className="portfolio-repository-link"><FiGithub /> View repository <FiArrowUpRight /></a>
+            </GlassPanel>
+          ))}
+        </div>
+      </section>
+    ))}
   </div>
 );
 

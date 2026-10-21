@@ -3,15 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
+import InformationPortfolioFlow from './components/InformationPortfolioFlow';
 
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import CalendarPage from './pages/CalendarPage';
-import PortfolioPage from './pages/PortfolioPage';
 import Settings from './pages/Settings';
-import InformationPage from './pages/InformationPage';
 import ClockStudioPage from './pages/ClockStudioPage';
 import AIAssistantPage from './pages/AIAssistantPage';
 
@@ -72,7 +71,7 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <PortfolioPage />
+                  <InformationPortfolioFlow />
                 </Layout>
               </ProtectedRoute>
             }
@@ -93,7 +92,7 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <InformationPage />
+                  <InformationPortfolioFlow />
                 </Layout>
               </ProtectedRoute>
             }
