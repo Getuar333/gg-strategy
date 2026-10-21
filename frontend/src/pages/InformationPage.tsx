@@ -54,14 +54,13 @@ const InformationPage: React.FC = () => {
 
   return (
     <div className="feature-page information-page px-4 py-7 sm:px-6 lg:px-8">
-      <section className="page-snap-section information-intro-section" aria-label="Profile introduction">
-        <header className="feature-heading mb-7">
-          <div>
-            <p className="feature-eyebrow"><FiUser />My Information</p>
-          </div>
-        </header>
+      <header className="feature-heading mb-7">
+        <div>
+          <p className="feature-eyebrow"><FiUser />My Information</p>
+        </div>
+      </header>
 
-        <section className="information-profile-card" aria-label="Personal profile">
+      <section className="information-profile-card" aria-label="Personal profile">
         <div className="information-profile-glow" aria-hidden="true" />
         <div className="information-avatar">
           {!profilePhotoUnavailable ? (
@@ -97,10 +96,9 @@ const InformationPage: React.FC = () => {
           <span>Shkarko CV</span>
           <FiDownload aria-hidden="true" />
         </a>
-        </section>
       </section>
 
-      <section className="information-section page-snap-section" aria-labelledby="personal-details-title">
+      <section className="information-section" aria-labelledby="personal-details-title">
         <div className="information-section-heading">
           <div>
             <h2 id="personal-details-title">Details</h2>
@@ -134,7 +132,7 @@ const InformationPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="information-section information-social-section page-snap-section" aria-labelledby="social-profiles-title">
+      <section className="information-section information-social-section" aria-labelledby="social-profiles-title">
         <div className="information-section-heading">
           <div>
             <h2 id="social-profiles-title">Mediat sociale</h2>
