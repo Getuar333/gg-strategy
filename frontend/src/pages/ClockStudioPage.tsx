@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FiArrowDown, FiCalendar, FiClock, FiRefreshCw } from 'react-icons/fi';
+import WorkBreakPlanner from '../components/WorkBreakPlanner';
 import { calculateDurationMinutes } from '../lib/timeCalculator';
 
 type ClockDesignId =
@@ -92,6 +93,8 @@ const ClockStudioPage: React.FC = () => {
           <p className="feature-heading-copy">Explore live clock faces and calculate elapsed time.</p>
         </div>
       </header>
+
+      <WorkBreakPlanner />
 
       <div className="clock-studio-layout">
         <section className={`clock-showcase clock-showcase--${designId} ${selectedDesign.tone === 'light' ? 'clock-showcase--light' : ''}`} style={style} aria-label="Live clock preview">
