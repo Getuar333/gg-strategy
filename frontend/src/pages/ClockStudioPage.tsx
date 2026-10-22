@@ -406,6 +406,51 @@ const ClockStudioPage: React.FC = () => {
         </section>
       </div>
 
+      <section className="clock-gallery-section">
+        <div className="clock-section-title clock-gallery-heading">
+          <div><p className="feature-eyebrow">Choose a look</p><h2>Clock gallery</h2><p>Each design uses the live local time.</p></div>
+        </div>
+        <div className="clock-gallery-grid">
+          {designs.map((design) => (
+            <article className={`clock-design-card ${designId === design.id ? 'is-selected' : ''}`} key={design.id}>
+              <div className={`clock-design-preview clock-design-preview--${design.id}`} aria-hidden="true">
+                {design.mode === 'analog' ? <span className="clock-preview-dial"><i /><i /></span> : <span className="clock-preview-digital">10:09<small>:{showSeconds ? '45' : '••'}</small></span>}
+              </div>
+              <div className="clock-design-copy"><h3>{design.title}</h3><p>{design.description}</p></div>
+              <button type="button" onClick={() => setDesignId(design.id)} className="clock-select-button" aria-pressed={designId === design.id}>{designId === design.id ? 'Selected' : 'Select design'}</button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="time-calculator-section" aria-labelledby="time-calculator-title">
+        <div className="time-calculator-intro">
+          <p className="feature-eyebrow"><FiArrowDown /> Time calculator</p>
+          <h2 id="time-calculator-title">Calculate elapsed time</h2>
+          <p>Compare two times, or add dates to include multiple days.</p>
+        </div>
+        <form className="time-calculator-form" onSubmit={calculateDuration}>
+          <div className="time-calculator-fields">
+            <label className="time-input-group"><span>Start time</span><input type="time" required value={startTime} onChange={(event) => setStartTime(event.target.value)} className="feature-input" /></label>
+            <label className="time-input-group"><span>End time</span><input type="time" required value={endTime} onChange={(event) => setEndTime(event.target.value)} className="feature-input" /></label>
+            <label className="time-input-group"><span>Start date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} /></span></label>
+            <label className="time-input-group"><span>End date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} /></span></label>
+          </div>
+          <div className="time-calculator-actions">
+            <button type="submit" className="feature-button">Calculate time</button>
+            <button type="button" onClick={resetCalculator} className="feature-button feature-button--quiet"><FiRefreshCw /> Reset</button>
+          </div>
+          {calculatorError && <p className="time-calculator-error" role="alert">{calculatorError}</p>}
+          {duration !== null && (
+            <div className="time-calculator-result" role="status">
+              <span className="time-result-label">Elapsed time</span>
+              <strong>{durationHours ? `${durationHours} ${durationHours === 1 ? 'hour' : 'hours'}` : ''}{durationHours && durationMinutes ? ' ' : ''}{durationMinutes || !durationHours ? `${durationMinutes} ${durationMinutes === 1 ? 'minute' : 'minutes'}` : ''}</strong>
+              <span>{duration.toLocaleString()} total minutes</span>
+            </div>
+          )}
+        </form>
+      </section>
+
       <section className="focus-planner-section" aria-labelledby="focus-planner-title">
         <div className="focus-planner-heading">
           <div>
@@ -469,51 +514,6 @@ const ClockStudioPage: React.FC = () => {
           })}
         </div>
         <p className="focus-planner-note"><FiClock /> Plans are saved on this device. Keep Clock Studio open to receive the timed alerts and sounds.</p>
-      </section>
-
-      <section className="clock-gallery-section">
-        <div className="clock-section-title clock-gallery-heading">
-          <div><p className="feature-eyebrow">Choose a look</p><h2>Clock gallery</h2><p>Each design uses the live local time.</p></div>
-        </div>
-        <div className="clock-gallery-grid">
-          {designs.map((design) => (
-            <article className={`clock-design-card ${designId === design.id ? 'is-selected' : ''}`} key={design.id}>
-              <div className={`clock-design-preview clock-design-preview--${design.id}`} aria-hidden="true">
-                {design.mode === 'analog' ? <span className="clock-preview-dial"><i /><i /></span> : <span className="clock-preview-digital">10:09<small>:{showSeconds ? '45' : '••'}</small></span>}
-              </div>
-              <div className="clock-design-copy"><h3>{design.title}</h3><p>{design.description}</p></div>
-              <button type="button" onClick={() => setDesignId(design.id)} className="clock-select-button" aria-pressed={designId === design.id}>{designId === design.id ? 'Selected' : 'Select design'}</button>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="time-calculator-section" aria-labelledby="time-calculator-title">
-        <div className="time-calculator-intro">
-          <p className="feature-eyebrow"><FiArrowDown /> Time calculator</p>
-          <h2 id="time-calculator-title">Calculate elapsed time</h2>
-          <p>Compare two times, or add dates to include multiple days.</p>
-        </div>
-        <form className="time-calculator-form" onSubmit={calculateDuration}>
-          <div className="time-calculator-fields">
-            <label className="time-input-group"><span>Start time</span><input type="time" required value={startTime} onChange={(event) => setStartTime(event.target.value)} className="feature-input" /></label>
-            <label className="time-input-group"><span>End time</span><input type="time" required value={endTime} onChange={(event) => setEndTime(event.target.value)} className="feature-input" /></label>
-            <label className="time-input-group"><span>Start date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} /></span></label>
-            <label className="time-input-group"><span>End date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} /></span></label>
-          </div>
-          <div className="time-calculator-actions">
-            <button type="submit" className="feature-button">Calculate time</button>
-            <button type="button" onClick={resetCalculator} className="feature-button feature-button--quiet"><FiRefreshCw /> Reset</button>
-          </div>
-          {calculatorError && <p className="time-calculator-error" role="alert">{calculatorError}</p>}
-          {duration !== null && (
-            <div className="time-calculator-result" role="status">
-              <span className="time-result-label">Elapsed time</span>
-              <strong>{durationHours ? `${durationHours} ${durationHours === 1 ? 'hour' : 'hours'}` : ''}{durationHours && durationMinutes ? ' ' : ''}{durationMinutes || !durationHours ? `${durationMinutes} ${durationMinutes === 1 ? 'minute' : 'minutes'}` : ''}</strong>
-              <span>{duration.toLocaleString()} total minutes</span>
-            </div>
-          )}
-        </form>
       </section>
     </div>
   );
