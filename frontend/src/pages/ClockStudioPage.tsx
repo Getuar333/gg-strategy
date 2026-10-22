@@ -423,34 +423,6 @@ const ClockStudioPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="time-calculator-section" aria-labelledby="time-calculator-title">
-        <div className="time-calculator-intro">
-          <p className="feature-eyebrow"><FiArrowDown /> Time calculator</p>
-          <h2 id="time-calculator-title">Calculate elapsed time</h2>
-          <p>Compare two times, or add dates to include multiple days.</p>
-        </div>
-        <form className="time-calculator-form" onSubmit={calculateDuration}>
-          <div className="time-calculator-fields">
-            <label className="time-input-group"><span>Start time</span><input type="time" required value={startTime} onChange={(event) => setStartTime(event.target.value)} className="feature-input" /></label>
-            <label className="time-input-group"><span>End time</span><input type="time" required value={endTime} onChange={(event) => setEndTime(event.target.value)} className="feature-input" /></label>
-            <label className="time-input-group"><span>Start date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} /></span></label>
-            <label className="time-input-group"><span>End date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} /></span></label>
-          </div>
-          <div className="time-calculator-actions">
-            <button type="submit" className="feature-button">Calculate time</button>
-            <button type="button" onClick={resetCalculator} className="feature-button feature-button--quiet"><FiRefreshCw /> Reset</button>
-          </div>
-          {calculatorError && <p className="time-calculator-error" role="alert">{calculatorError}</p>}
-          {duration !== null && (
-            <div className="time-calculator-result" role="status">
-              <span className="time-result-label">Elapsed time</span>
-              <strong>{durationHours ? `${durationHours} ${durationHours === 1 ? 'hour' : 'hours'}` : ''}{durationHours && durationMinutes ? ' ' : ''}{durationMinutes || !durationHours ? `${durationMinutes} ${durationMinutes === 1 ? 'minute' : 'minutes'}` : ''}</strong>
-              <span>{duration.toLocaleString()} total minutes</span>
-            </div>
-          )}
-        </form>
-      </section>
-
       <section className="focus-planner-section" aria-labelledby="focus-planner-title">
         <div className="focus-planner-heading">
           <div>
@@ -515,6 +487,36 @@ const ClockStudioPage: React.FC = () => {
         </div>
         <p className="focus-planner-note"><FiClock /> Plans are saved on this device. Keep Clock Studio open to receive the timed alerts and sounds.</p>
       </section>
+
+      <section className="time-calculator-section" aria-labelledby="time-calculator-title">
+        <div className="time-calculator-intro">
+          <p className="feature-eyebrow"><FiArrowDown /> Time calculator</p>
+          <h2 id="time-calculator-title">Calculate elapsed time</h2>
+          <p>Compare two times, or add dates to include multiple days.</p>
+        </div>
+        <form className="time-calculator-form" onSubmit={calculateDuration}>
+          <div className="time-calculator-fields">
+            <label className="time-input-group"><span>Start time</span><input type="time" required value={startTime} onChange={(event) => setStartTime(event.target.value)} className="feature-input" /></label>
+            <label className="time-input-group"><span>End time</span><input type="time" required value={endTime} onChange={(event) => setEndTime(event.target.value)} className="feature-input" /></label>
+            <label className="time-input-group"><span>Start date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} /></span></label>
+            <label className="time-input-group"><span>End date <small>Optional</small></span><span className="time-date-input"><FiCalendar /><input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} /></span></label>
+          </div>
+          <div className="time-calculator-actions">
+            <button type="submit" className="feature-button">Calculate time</button>
+            <button type="button" onClick={resetCalculator} className="feature-button feature-button--quiet"><FiRefreshCw /> Reset</button>
+          </div>
+          {calculatorError && <p className="time-calculator-error" role="alert">{calculatorError}</p>}
+          {duration !== null && (
+            <div className="time-calculator-result" role="status">
+              <span className="time-result-label">Elapsed time</span>
+              <strong>{durationHours ? `${durationHours} ${durationHours === 1 ? 'hour' : 'hours'}` : ''}{durationHours && durationMinutes ? ' ' : ''}{durationMinutes || !durationHours ? `${durationMinutes} ${durationMinutes === 1 ? 'minute' : 'minutes'}` : ''}</strong>
+              <span>{duration.toLocaleString()} total minutes</span>
+            </div>
+          )}
+        </form>
+      </section>
+
+
     </div>
   );
 };
