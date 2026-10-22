@@ -1804,11 +1804,7 @@ textarea {
 .time-calculator-result > span:last-child { margin-left: auto; color: #93cbb5; font-size: 0.7rem; }
 
 .focus-planner-section { margin-top: 30px; }
-.focus-planner-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
-.focus-planner-heading h2 { margin: 6px 0 0; color: #f7f8ff; font-size: 1.22rem; font-weight: 700; letter-spacing: -0.025em; }
-.focus-planner-heading > div > p:last-child { max-width: 610px; margin: 8px 0 0; color: #929bb2; font-size: 0.76rem; line-height: 1.55; }
-.focus-planner-heading .feature-eyebrow { display: flex; align-items: center; gap: 7px; }
-.focus-planner-heading .feature-eyebrow svg { width: 14px; height: 14px; }
+.focus-planner-content { min-width: 0; }
 .focus-planner-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .focus-plan-card { min-width: 0; padding: 19px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 19px; background: rgba(16, 20, 39, 0.84); box-shadow: 0 18px 46px rgba(0, 0, 0, 0.17); }
 .focus-plan-card--work { --focus-plan-accent: #a78bfa; --focus-plan-glow: rgba(139, 92, 246, 0.13); }
@@ -2201,6 +2197,7 @@ textarea {
   .calendar-layout,
   .clock-studio-layout,
   .ai-assistant-layout { grid-template-columns: minmax(0, 1fr); }
+  .focus-planner-grid { grid-template-columns: minmax(0, 1fr); }
   .clock-controls-card { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 22px; }
   .clock-controls-card .clock-section-title,
   .clock-controls-card .clock-time-note { grid-column: span 2; }

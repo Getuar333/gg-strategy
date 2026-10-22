@@ -423,69 +423,69 @@ const ClockStudioPage: React.FC = () => {
         </div>
       </section>
 
-      <section className="focus-planner-section" aria-labelledby="focus-planner-title">
-        <div className="focus-planner-heading">
-          <div>
-            <p className="feature-eyebrow"><FiCalendar /> Time planning</p>
-            <h2 id="focus-planner-title">Work time &amp; break time</h2>
-            <p>Set an exact date and time for each period. You will be alerted 8 minutes before it ends and when it finishes.</p>
+      <section className="time-calculator-section focus-planner-section" aria-labelledby="focus-planner-title">
+        <div className="time-calculator-intro">
+          <p className="feature-eyebrow"><FiCalendar /> Time planning</p>
+          <h2 id="focus-planner-title">Work time &amp; break time</h2>
+          <p>Set an exact date and time for work and breaks. Get an alert 8 minutes before each period ends and when it finishes.</p>
+        </div>
+
+        <div className="focus-planner-content">
+          {scheduleNotice && <div className="focus-planner-notice" role="alert" aria-live="assertive"><FiBell /><span>{scheduleNotice.text}</span></div>}
+
+          <div className="focus-planner-grid">
+            {scheduleKeys.map((key) => {
+              const isWork = key === 'work';
+              const schedule = schedules[key];
+              const draft = scheduleDrafts[key];
+              const status = getScheduleStatus(schedule, now.getTime());
+
+              return (
+                <article className={`focus-plan-card focus-plan-card--${key}`} key={key}>
+                  <div className="focus-plan-card-heading">
+                    <span className="focus-plan-icon">{isWork ? <FiBriefcase /> : <FiCoffee />}</span>
+                    <div><p>{isWork ? 'Focus session' : 'Rest session'}</p><h3>{scheduleTitles[key]}</h3></div>
+                    <span className={`focus-plan-badge focus-plan-badge--${status.variant}`}>{status.label}</span>
+                  </div>
+
+                  <form className="focus-plan-form" onSubmit={(event) => activateSchedule(key, event)}>
+                    <label className="time-input-group">
+                      <span>Date</span>
+                      <input type="date" required value={draft.date} onChange={(event) => updateScheduleDraft(key, 'date', event.target.value)} className="feature-input" />
+                    </label>
+                    <div className="focus-plan-time-fields">
+                      <label className="time-input-group">
+                        <span>Start time</span>
+                        <input type="time" required value={draft.start} onChange={(event) => updateScheduleDraft(key, 'start', event.target.value)} className="feature-input" />
+                      </label>
+                      <label className="time-input-group">
+                        <span>End time</span>
+                        <input type="time" required value={draft.end} onChange={(event) => updateScheduleDraft(key, 'end', event.target.value)} className="feature-input" />
+                      </label>
+                    </div>
+                    <p className="focus-plan-hint">Uses your device's local time. If the end time is earlier, the period ends the next day.</p>
+                    {scheduleErrors[key] && <p className="time-calculator-error" role="alert">{scheduleErrors[key]}</p>}
+
+                    <div className="focus-plan-actions">
+                      <button type="submit" className="feature-button">{schedule?.active ? 'Update schedule' : 'Save & activate'}</button>
+                      {schedule?.active && <button type="button" onClick={() => stopSchedule(key)} className="feature-button feature-button--quiet">Stop</button>}
+                      {schedule && <button type="button" onClick={() => clearSchedule(key)} className="feature-button feature-button--quiet">Clear</button>}
+                    </div>
+                  </form>
+
+                  {schedule && (
+                    <div className="focus-plan-summary">
+                      <div><span>Starts</span><strong>{formatScheduleDateTime(schedule.startAt)}</strong></div>
+                      <div><span>Ends</span><strong>{formatScheduleDateTime(schedule.endAt)}</strong></div>
+                      <p className={`focus-plan-detail focus-plan-detail--${status.variant}`} role="status">{status.detail}</p>
+                    </div>
+                  )}
+                </article>
+              );
+            })}
           </div>
+          <p className="focus-planner-note"><FiClock /> Plans are saved on this device. Keep Clock Studio open to receive the timed alerts and sounds.</p>
         </div>
-
-        {scheduleNotice && <div className="focus-planner-notice" role="alert" aria-live="assertive"><FiBell /><span>{scheduleNotice.text}</span></div>}
-
-        <div className="focus-planner-grid">
-          {scheduleKeys.map((key) => {
-            const isWork = key === 'work';
-            const schedule = schedules[key];
-            const draft = scheduleDrafts[key];
-            const status = getScheduleStatus(schedule, now.getTime());
-
-            return (
-              <article className={`focus-plan-card focus-plan-card--${key}`} key={key}>
-                <div className="focus-plan-card-heading">
-                  <span className="focus-plan-icon">{isWork ? <FiBriefcase /> : <FiCoffee />}</span>
-                  <div><p>{isWork ? 'Focus session' : 'Rest session'}</p><h3>{scheduleTitles[key]}</h3></div>
-                  <span className={`focus-plan-badge focus-plan-badge--${status.variant}`}>{status.label}</span>
-                </div>
-
-                <form className="focus-plan-form" onSubmit={(event) => activateSchedule(key, event)}>
-                  <label className="time-input-group">
-                    <span>Date</span>
-                    <input type="date" required value={draft.date} onChange={(event) => updateScheduleDraft(key, 'date', event.target.value)} className="feature-input" />
-                  </label>
-                  <div className="focus-plan-time-fields">
-                    <label className="time-input-group">
-                      <span>Start time</span>
-                      <input type="time" required value={draft.start} onChange={(event) => updateScheduleDraft(key, 'start', event.target.value)} className="feature-input" />
-                    </label>
-                    <label className="time-input-group">
-                      <span>End time</span>
-                      <input type="time" required value={draft.end} onChange={(event) => updateScheduleDraft(key, 'end', event.target.value)} className="feature-input" />
-                    </label>
-                  </div>
-                  <p className="focus-plan-hint">Uses your device's local time. If the end time is earlier, the period ends the next day.</p>
-                  {scheduleErrors[key] && <p className="time-calculator-error" role="alert">{scheduleErrors[key]}</p>}
-
-                  <div className="focus-plan-actions">
-                    <button type="submit" className="feature-button">{schedule?.active ? 'Update schedule' : 'Save & activate'}</button>
-                    {schedule?.active && <button type="button" onClick={() => stopSchedule(key)} className="feature-button feature-button--quiet">Stop</button>}
-                    {schedule && <button type="button" onClick={() => clearSchedule(key)} className="feature-button feature-button--quiet">Clear</button>}
-                  </div>
-                </form>
-
-                {schedule && (
-                  <div className="focus-plan-summary">
-                    <div><span>Starts</span><strong>{formatScheduleDateTime(schedule.startAt)}</strong></div>
-                    <div><span>Ends</span><strong>{formatScheduleDateTime(schedule.endAt)}</strong></div>
-                    <p className={`focus-plan-detail focus-plan-detail--${status.variant}`} role="status">{status.detail}</p>
-                  </div>
-                )}
-              </article>
-            );
-          })}
-        </div>
-        <p className="focus-planner-note"><FiClock /> Plans are saved on this device. Keep Clock Studio open to receive the timed alerts and sounds.</p>
       </section>
 
       <section className="time-calculator-section" aria-labelledby="time-calculator-title">
