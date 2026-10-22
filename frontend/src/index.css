@@ -1803,6 +1803,47 @@ textarea {
 .time-calculator-result strong { color: #d5f5e8; font-size: 1rem; }
 .time-calculator-result > span:last-child { margin-left: auto; color: #93cbb5; font-size: 0.7rem; }
 
+.focus-planner-section { margin-top: 30px; }
+.focus-planner-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
+.focus-planner-heading h2 { margin: 6px 0 0; color: #f7f8ff; font-size: 1.22rem; font-weight: 700; letter-spacing: -0.025em; }
+.focus-planner-heading > div > p:last-child { max-width: 610px; margin: 8px 0 0; color: #929bb2; font-size: 0.76rem; line-height: 1.55; }
+.focus-planner-heading .feature-eyebrow { display: flex; align-items: center; gap: 7px; }
+.focus-planner-heading .feature-eyebrow svg { width: 14px; height: 14px; }
+.focus-planner-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.focus-plan-card { min-width: 0; padding: 19px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 19px; background: rgba(16, 20, 39, 0.84); box-shadow: 0 18px 46px rgba(0, 0, 0, 0.17); }
+.focus-plan-card--work { --focus-plan-accent: #a78bfa; --focus-plan-glow: rgba(139, 92, 246, 0.13); }
+.focus-plan-card--break { --focus-plan-accent: #72d9bb; --focus-plan-glow: rgba(45, 180, 145, 0.12); }
+.focus-plan-card-heading { display: flex; min-width: 0; align-items: center; gap: 11px; margin-bottom: 18px; }
+.focus-plan-icon { display: grid; width: 39px; height: 39px; flex: 0 0 auto; place-items: center; border: 1px solid color-mix(in srgb, var(--focus-plan-accent) 20%, transparent); border-radius: 13px; background: var(--focus-plan-glow); color: var(--focus-plan-accent); font-size: 16px; }
+.focus-plan-card-heading > div { min-width: 0; }
+.focus-plan-card-heading p { margin: 0 0 3px; color: #8992aa; font-size: 0.65rem; }
+.focus-plan-card-heading h3 { margin: 0; color: #f4f5fc; font-size: 1rem; font-weight: 680; }
+.focus-plan-badge { margin-left: auto; padding: 5px 8px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 999px; background: rgba(255, 255, 255, 0.045); color: #9ca5bb; font-size: 0.62rem; white-space: nowrap; }
+.focus-plan-badge--upcoming { border-color: rgba(100, 166, 255, 0.2); background: rgba(59, 130, 246, 0.1); color: #a6cbff; }
+.focus-plan-badge--running { border-color: rgba(83, 214, 173, 0.2); background: rgba(34, 197, 145, 0.1); color: #8ce1c2; }
+.focus-plan-badge--ending { border-color: rgba(250, 190, 95, 0.23); background: rgba(217, 145, 39, 0.12); color: #f4c77e; }
+.focus-plan-badge--complete { border-color: rgba(83, 214, 173, 0.16); color: #92cdb8; }
+.focus-plan-form { display: grid; gap: 12px; }
+.focus-plan-card .time-input-group { gap: 7px; }
+.focus-plan-card .feature-input { width: 100%; min-width: 0; height: 43px; padding: 0 11px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; outline: 0; background: rgba(7, 10, 24, 0.82); color: #f7f7ff; color-scheme: dark; font-size: 0.75rem; }
+.focus-plan-card .feature-input:focus { border-color: color-mix(in srgb, var(--focus-plan-accent) 65%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-plan-accent) 12%, transparent); }
+.focus-plan-time-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+.focus-plan-hint { margin: -1px 0 0; color: #818ba3; font-size: 0.66rem; line-height: 1.5; }
+.focus-plan-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1px; }
+.focus-plan-actions .feature-button { min-height: 38px; padding: 0 13px; font-size: 0.71rem; }
+.focus-plan-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.075); }
+.focus-plan-summary > div { display: grid; min-width: 0; gap: 5px; }
+.focus-plan-summary > div span { color: #838da5; font-size: 0.62rem; }
+.focus-plan-summary > div strong { overflow: hidden; color: #d4d9e9; font-size: 0.69rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.focus-plan-detail { grid-column: span 2; margin: 0; color: #99a2b8; font-size: 0.7rem; }
+.focus-plan-detail--running { color: #8ce1c2; }
+.focus-plan-detail--ending { color: #f4c77e; }
+.focus-plan-detail--complete { color: #92cdb8; }
+.focus-planner-notice { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; padding: 12px 15px; border: 1px solid rgba(167, 139, 250, 0.27); border-radius: 13px; background: rgba(139, 92, 246, 0.12); color: #e5dcff; font-size: 0.78rem; }
+.focus-planner-notice svg { flex: 0 0 auto; color: #bca4ff; }
+.focus-planner-note { display: flex; align-items: center; gap: 7px; margin: 12px 1px 0; color: #808aa3; font-size: 0.66rem; line-height: 1.5; }
+.focus-planner-note svg { flex: 0 0 auto; color: #a997ee; }
+
 /* AI Assistant */
 .ai-new-chat { flex: 0 0 auto; }
 
@@ -2197,6 +2238,7 @@ textarea {
   .clock-controls-card .clock-section-title { margin-bottom: 0; }
   .clock-controls-card .clock-color-row { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
   .clock-gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .focus-planner-grid { grid-template-columns: minmax(0, 1fr); }
   .time-calculator-section { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 18px; }
   .time-calculator-intro h2 { max-width: none; }
   .time-calculator-intro > p:last-child { max-width: none; }
